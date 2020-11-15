@@ -1,0 +1,5 @@
+
+### Use this call to verify the REST Api is working as expected
+
+GET https://<API ID>.execute-api.eu-central-1.amazonaws.com/stage/surveys HTTP/1.1
+Authorization: <AUTHORIZATION_CODE>
