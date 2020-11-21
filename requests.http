@@ -3,3 +3,18 @@
 
 GET https://<API ID>.execute-api.eu-central-1.amazonaws.com/stage/surveys HTTP/1.1
 Authorization: <AUTHORIZATION_CODE>
+
+###
+
+GET https://y5jujitow3.execute-api.eu-central-1.amazonaws.com/stage/surveys HTTP/1.1
+Authorization: 12345
+
+###
+
+https://zdk4kqbcwc.execute-api.eu-central-1.amazonaws.com/stage/surveys
+Authorization: 12345
+
+###
+
+https://1y894i8x4c.execute-api.eu-central-1.amazonaws.com/stage/surveys
+Authorization: 12345

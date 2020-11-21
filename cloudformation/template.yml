@@ -1,0 +1,124 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters: 
+  TableNameSurveys: 
+    Type: String
+  LambdaExecutionRole: 
+    Type: String
+  LambdaFunctionNameGetSurveys: 
+    Type: String
+  LambdaFunctionNameAuthorizer:
+    Type: String
+  ApiGatewayName: 
+    Type: String
+  ApiGatewayAuthorizerFunction:
+    Type: String
+
+Resources: 
+  DynamoDbTableSurveys: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - 
+          AttributeName: "id"
+          AttributeType: "N"
+      KeySchema: 
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+      TableName: 
+        Ref: TableNameSurveys
+  LambdaGetSurveys:
+      Type: AWS::Lambda::Function
+      Properties:
+        FunctionName:
+          Ref: LambdaFunctionNameGetSurveys
+        Runtime: nodejs12.x
+        Role:
+          Ref: LambdaExecutionRole
+        Handler: index.handler
+        Code: ../lambda_get_surveys/
+        Environment:
+          Variables: 
+            TABLE_NAME:
+              Ref: TableNameSurveys
+  LambdaAuthorizer:
+      Type: AWS::Lambda::Function
+      Properties:
+        FunctionName:
+          Ref: LambdaFunctionNameAuthorizer
+        Runtime: nodejs12.x
+        Role:
+          Ref: LambdaExecutionRole
+        Handler: index.handler
+        Code: ../lambda_authorizer/
+  ApiGatewayRestApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      EndpointConfiguration:
+        Types:
+          - REGIONAL
+      Name:
+        Ref: ApiGatewayName
+  Authorizer:
+    Type: 'AWS::ApiGateway::Authorizer'
+    Properties:
+      AuthorizerResultTtlInSeconds: '300'
+      AuthorizerUri: !Sub
+          - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations"
+          - lambdaArn: !GetAtt "LambdaAuthorizer.Arn"
+      Type: TOKEN
+      IdentitySource: method.request.header.Authorization
+      Name: !Ref ApiGatewayAuthorizerFunction
+      RestApiId: !Ref ApiGatewayRestApi
+  ApiGatewayResourceSurveys:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt ApiGatewayRestApi.RootResourceId
+      PathPart: 'surveys'
+      RestApiId: !Ref ApiGatewayRestApi
+  ApiGatewayMethodSurveysGet:
+    Type: "AWS::ApiGateway::Method"
+    Properties:
+      AuthorizationType: CUSTOM
+      AuthorizerId: !Ref Authorizer
+      HttpMethod: GET
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: "AWS_PROXY"
+        Uri: !Sub
+          - "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${lambdaArn}/invocations"
+          - lambdaArn: !GetAtt "LambdaGetSurveys.Arn"
+      ResourceId: !Ref ApiGatewayResourceSurveys
+      RestApiId: !Ref ApiGatewayRestApi
+  PermissionAuthorizer:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt LambdaAuthorizer.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub
+          - "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi_Id}/*"
+          - ApiGatewayRestApi_Id: !Ref ApiGatewayRestApi
+  PermissionGetSurveys:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt LambdaGetSurveys.Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub
+          - "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi_Id}/*/GET/*"
+          - ApiGatewayRestApi_Id: !Ref ApiGatewayRestApi
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn: ApiGatewayMethodSurveysGet
+    Properties:
+      RestApiId: !Ref ApiGatewayRestApi
+  ApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref ApiGatewayDeployment
+      RestApiId: !Ref ApiGatewayRestApi
+      StageName: 'stage'
