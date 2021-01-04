@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Parameters: 
+  # TableNameSurveys: 
+  #   Type: String
+  LambdaExecutionRole: 
+    Type: String
+Resources:
+  SurveysTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id
+        Type: Number
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+    #   TableName: 
+    #       Ref: TableNameSurveys
+  SurveysAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        DefaultAuthorizer: LambdaAuthorizer
+        Authorizers:
+          LambdaAuthorizer:
+            FunctionArn: !GetAtt LambdaAuthorizer.Arn
+  GetSurveys:
+      Type: AWS::Serverless::Function
+      Properties:
+        Runtime: nodejs12.x
+        CodeUri: ../lambda_get_surveys
+        Handler: index.handler
+        Environment:
+          Variables:
+            TABLE_NAME: !Ref SurveysTable
+        Role:
+          Ref: LambdaExecutionRole
+        Events:
+          GetSurveys:
+            Type: Api
+            Properties:
+              RestApiId: !Ref SurveysAPI
+              Path: /surveys
+              Method: get
+  LambdaAuthorizer:
+      Type: AWS::Serverless::Function
+      Properties:
+        Runtime: nodejs12.x
+        CodeUri: ../lambda_authorizer
+        Handler: index.handler
+        Role:
+          Ref: LambdaExecutionRole
