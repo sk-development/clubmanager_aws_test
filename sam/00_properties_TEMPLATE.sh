@@ -2,6 +2,7 @@
 
 # Copy that file to 00_properties.sh and set all predefined and generated properties
 
+LOCAL_ENDPOINT=http://localstack_main:4566
 BASEFOLDER=$(pwd)
 ACCOUNT_ID=<AWS Account ID>
 REGION=<AWS deployment region>

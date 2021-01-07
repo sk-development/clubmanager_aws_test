@@ -5,6 +5,9 @@ Parameters:
   #   Type: String
   LambdaExecutionRole: 
     Type: String
+  LocalEndpoint: 
+    Type: String
+    Default: AWS::NoValue
 Resources:
   SurveysTable:
     Type: AWS::Serverless::SimpleTable
@@ -35,6 +38,7 @@ Resources:
         Environment:
           Variables:
             TABLE_NAME: !Ref SurveysTable
+            LOCAL_ENDPOINT: !Ref LocalEndpoint
         Role:
           Ref: LambdaExecutionRole
         Events:

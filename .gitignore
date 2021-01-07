@@ -2,3 +2,5 @@
 cloudformation/template.packaged.yml
 sam/template.packaged.yaml
 .aws-sam
+node_modules
+package-lock.json
