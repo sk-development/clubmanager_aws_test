@@ -13,7 +13,7 @@ Resources:
         Name: id
         Type: Number
       ProvisionedThroughput: 
-        ReadCapacityUnits: 1
+        ReadCapacityUnits: 5
         WriteCapacityUnits: 1
     #   TableName: 
     #       Ref: TableNameSurveys
@@ -30,7 +30,7 @@ Resources:
       Type: AWS::Serverless::Function
       Properties:
         Runtime: nodejs12.x
-        CodeUri: ../lambda_get_surveys
+        CodeUri: ./src/lambda_get_surveys
         Handler: index.handler
         Environment:
           Variables:
@@ -48,7 +48,7 @@ Resources:
       Type: AWS::Serverless::Function
       Properties:
         Runtime: nodejs12.x
-        CodeUri: ../lambda_authorizer
+        CodeUri: ./src/lambda_authorizer
         Handler: index.handler
         Role:
           Ref: LambdaExecutionRole

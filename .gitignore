@@ -1,3 +1,4 @@
 00_properties.sh
 cloudformation/template.packaged.yml
-sam/sam-template.packaged.yaml
+sam/template.packaged.yaml
+.aws-sam
