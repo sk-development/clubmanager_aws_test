@@ -15,9 +15,6 @@ Resources:
       PrimaryKey:
         Name: id
         Type: Number
-      ProvisionedThroughput: 
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
     #   TableName: 
     #       Ref: TableNameSurveys
   SurveysAPI:

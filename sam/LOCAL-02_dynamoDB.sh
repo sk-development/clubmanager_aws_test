@@ -6,7 +6,7 @@ aws dynamodb create-table \
     --table-name SurveysTable \
     --attribute-definitions AttributeName=id,AttributeType=N \
     --key-schema AttributeName=id,KeyType=HASH \
-    --provisioned-throughput ReadCapacityUnits=1,WriteCapacityUnits=1
+    --billing-mode PAY_PER_REQUEST
 
 aws dynamodb put-item \
     --endpoint-url http://localhost:4566 \
