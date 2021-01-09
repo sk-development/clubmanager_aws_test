@@ -16,7 +16,7 @@ Resources:
         Name: id
         Type: Number
       ProvisionedThroughput: 
-        ReadCapacityUnits: 5
+        ReadCapacityUnits: 1
         WriteCapacityUnits: 1
     #   TableName: 
     #       Ref: TableNameSurveys
