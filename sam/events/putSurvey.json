@@ -1,0 +1,5 @@
+{
+    "id": {"N": "5"},
+    "name": {"S": "First Input survey"},
+    "options": { "L": [ { "M" : { "index" : { "N" : "0" }, "text" : { "S" : "option1" } } }, { "M" : { "index" : { "N" : "1" }, "text" : { "S" : "option2" } } } ] }
+}

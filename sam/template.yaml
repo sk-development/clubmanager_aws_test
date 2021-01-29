@@ -45,6 +45,25 @@ Resources:
               RestApiId: !Ref SurveysAPI
               Path: /surveys
               Method: get
+  PutSurvey:
+      Type: AWS::Serverless::Function
+      Properties:
+        Runtime: nodejs12.x
+        CodeUri: ./src/lambda_put_survey
+        Handler: index.handler
+        Environment:
+          Variables:
+            TABLE_NAME: !Ref SurveysTable
+            LOCAL_ENDPOINT: !Ref LocalEndpoint
+        Role:
+          Ref: LambdaExecutionRole
+        Events:
+          PutSurvey:
+            Type: Api
+            Properties:
+              RestApiId: !Ref SurveysAPI
+              Path: /surveys
+              Method: put
   LambdaAuthorizer:
       Type: AWS::Serverless::Function
       Properties:

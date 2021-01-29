@@ -1,5 +1,6 @@
 {
     "configurations": [
+
         {
             "type": "aws-sam",
             "request": "direct-invoke",
@@ -23,6 +24,36 @@
                 "httpMethod": "get",
                 "payload": {
                     "json": {}
+                }
+            },
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "API sam:PutSurvey",
+            "sam": {
+                "dockerNetwork": "localstack_default"
+            },
+            "invokeTarget": {
+                "target": "api",
+                "templatePath": "sam/template.yaml",
+                "logicalId": "PutSurvey"
+            },
+            "lambda": {
+                "environmentVariables": {
+                    "LOCAL_ENDPOINT": "http://localstack_main:4566",
+                    "TABLE_NAME": "SurveysTable"
+                }
+            },
+            "api": {
+                "path": "/surveys",
+                "httpMethod": "put",
+                "payload": {
+                    "json": {
+                        "id": {"N": "5"},
+                        "name": {"S": "First Input survey"},
+                        "options": { "L": [ { "M" : { "index" : { "N" : "0" }, "text" : { "S" : "option1" } } }, { "M" : { "index" : { "N" : "1" }, "text" : { "S" : "option2" } } } ] }                    
+                    }
                 }
             },
         }
