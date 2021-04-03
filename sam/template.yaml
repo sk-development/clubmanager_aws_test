@@ -8,6 +8,14 @@ Parameters:
   LocalEndpoint: 
     Type: String
     Default: AWS::NoValue
+  DeploymentBucket:
+    Type: String
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "''OPTIONS,POST,GET''"
+      AllowHeaders: "'Content-Type, x-apikey, x-tenantid'"
+      AllowOrigin: "'http://localhost:4200'"
 Resources:
   SurveysTable:
     Type: AWS::Serverless::SimpleTable
@@ -21,6 +29,18 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
+      # Cors:
+      #   AllowMethods: "'OPTIONS,POST,GET'"
+      #   AllowHeaders: "'Content-Type, x-apikey, x-tenantid'"
+      #   AllowOrigin: "'http://localhost:4200'"
+      #   MaxAge: "'3600'"
+      #   AllowCredentials: True
+      # DefinitionBody:
+      #   Fn::Transform:
+      #     Name: AWS::Include
+      #     Parameters:
+      #       # Location: !Sub s3://${DeploymentBucket}/openapi.yaml #for production: TODO create s3 bucket with name 'DeploymentBucket' and put openapi.yaml file in it
+      #       Location: openapi_two.yaml #for local development
       Auth:
         DefaultAuthorizer: LambdaAuthorizer
         Authorizers:
@@ -58,7 +78,45 @@ Resources:
         Role:
           Ref: LambdaExecutionRole
         Events:
-          PutSurvey:
+          PutSurveys:
+            Type: Api
+            Properties:
+              RestApiId: !Ref SurveysAPI
+              Path: /surveys
+              Method: post
+  DeleteSurveys:
+      Type: AWS::Serverless::Function
+      Properties:
+        Runtime: nodejs12.x
+        CodeUri: ./src/lambda_delete_surveys
+        Handler: index.handler
+        Environment:
+          Variables:
+            TABLE_NAME: !Ref SurveysTable
+            LOCAL_ENDPOINT: !Ref LocalEndpoint
+        Role:
+          Ref: LambdaExecutionRole
+        Events:
+          DeleteSurveys:
+            Type: Api
+            Properties:
+              RestApiId: !Ref SurveysAPI
+              Path: /surveys
+              Method: delete
+  UpdateSurveys:
+      Type: AWS::Serverless::Function
+      Properties:
+        Runtime: nodejs12.x
+        CodeUri: ./src/lambda_update_surveys
+        Handler: index.handler
+        Environment:
+          Variables:
+            TABLE_NAME: !Ref SurveysTable
+            LOCAL_ENDPOINT: !Ref LocalEndpoint
+        Role:
+          Ref: LambdaExecutionRole
+        Events:
+          UpdateSurveys:
             Type: Api
             Properties:
               RestApiId: !Ref SurveysAPI

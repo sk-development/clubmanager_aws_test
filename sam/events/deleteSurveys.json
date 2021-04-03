@@ -1,0 +1,7 @@
+{
+    "httpMethod": "DELETE",
+    "headers": {
+        "content-type": "application/json"
+    },
+    "body": "{\"id\":\"0\"}"
+}

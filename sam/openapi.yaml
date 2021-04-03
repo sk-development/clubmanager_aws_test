@@ -1,0 +1,74 @@
+---
+openapi: 3.0.0
+info:
+  title: API Gateway OpenAPI Definition
+  version: 1.0.0
+
+paths:
+  /surveys:
+    get:
+      summary: Return all surveys
+      operationId: getAllSurveys
+      parameters: #does aws supports this structure of writing the headers? If not: use x-amazon-apigateway-response(s) but do not know how to map an error???
+        - in: header
+          name: Access-Control-Allow-Origin
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Return all surveys if no errors occur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retData'
+        default:
+          description: Unexpected error occur
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/retData'
+
+      x-amazon-apigateway-integration:
+        payloadFormatVersion: "2.0"
+        uri: ./src/lambda_get_surveys #for local development
+          # Fn::Sub: arn:aws:apigatewawy${AWS::Region}:lambda:path/2015-03-31/functions/${GetSurveys.Arn}/invocations #for production development
+        httpMethod: POST
+        type: aws
+        responses:
+          OK: #search for 'OK' in the lambda status response / derived from the swagger api gateway exported file (do not know if this will work)
+            statusCode: '200'
+            responseTemplate:
+              application/json:
+                $ref: '#/components/schemas/retData'
+          ERROR:
+            statusCode: '500'
+            responseTemplate:
+              application/json:
+                $ref: '#/components/schemas/retData'
+
+      # extension for cors configuration
+      # x-amazon-apigateway-gateway-responses:
+        # responseParameters:
+          # gatewayresponse.header.Access-Control-Allow-Origin: 'http://localhost:4200',
+      #     gatewayresponse.header.from-request-header: method.request.header.Accept,
+      #     gatewayresponse.header.from-request-path: method.request.path.petId,
+      #     gatewayresponse.header.from-request-query: method.request.querystring.qname
+      #   responseTemplates:
+      #     application/json: # ... TODO
+
+# define the structure of the returned data here
+components:
+  schemas:
+    retData:
+      type: object
+      required:
+        - status
+        - statusCode
+        - data
+      properties:
+        status:
+          type: string
+        statusCode:
+          type: integer
+        data:
+          type: object
