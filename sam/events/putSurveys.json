@@ -1,0 +1,7 @@
+{
+    "httpMethod": "POST",
+    "headers": {
+        "content-type": "application/json"
+    },
+    "body": "{\"name\":\"myThirdSurvey\", \"options\":[{\"index\":\"8\",\"text\":\"option8\"},{\"index\":\"9\",\"text\":\"option9\"}]}"
+}
