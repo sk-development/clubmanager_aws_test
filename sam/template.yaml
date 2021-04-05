@@ -22,7 +22,7 @@ Resources:
     Properties:
       PrimaryKey:
         Name: id
-        Type: Number
+        Type: String
     #   TableName: 
     #       Ref: TableNameSurveys
   SurveysAPI:
