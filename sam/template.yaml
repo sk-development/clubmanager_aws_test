@@ -107,7 +107,7 @@ Resources:
       Type: AWS::Serverless::Function
       Properties:
         Runtime: nodejs12.x
-        CodeUri: ./src/lambda_update_surveys
+        CodeUri: ./src/lambda_update_survey
         Handler: index.handler
         Environment:
           Variables:
