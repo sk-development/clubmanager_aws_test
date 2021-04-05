@@ -9,7 +9,7 @@ function handle(businessLogicCallback, event) {
             data: err
         }
     }
-    return packageResult(handledResult);
+    return packageHttpResponse(handledResult);
 }
 
 async function handleAsync(businessLogicCallback, event) {
@@ -24,7 +24,7 @@ async function handleAsync(businessLogicCallback, event) {
             data: err
         }
     }
-    return packageResult(handledResult);
+    return packageHttpResponse(handledResult);
 }
 
 function handleResult(result) {
@@ -42,7 +42,7 @@ function handleResult(result) {
     }
 }
 
-function packageResult(handledResult) {
+function packageHttpResponse(handledResult) {
     return {
         statusCode: handledResult.statusCode,
         headers: {
