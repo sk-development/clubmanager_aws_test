@@ -8,10 +8,7 @@ var endPoint = (process.env.LOCAL_ENDPOINT == "AWS::NoValue") ? null : process.e
 var dynamoDb = new AWS.DynamoDB({ apiVersion: '2012-08-10', endpoint: endPoint });
 
 exports.handler = async (event) => {
-    //uuid is not possible because of Number type from ID -> has to be of type String
-    // const id = uuidv4();
-    // const convertedId = id.replace(/-/g, "").toString();
-    var intID = Math.floor(Math.random());
+    const id = uuidv4();
     const name = JSON.parse(event.body).name;
 
     const optionsArray = [];
@@ -25,7 +22,7 @@ exports.handler = async (event) => {
         'Item': {
             'id':
             {
-                'N': `${intID}`
+                'S': `${id}`
             },
             'name':
             {
