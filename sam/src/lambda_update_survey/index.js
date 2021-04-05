@@ -7,8 +7,9 @@ var endPoint = (process.env.LOCAL_ENDPOINT == "AWS::NoValue") ? null : process.e
 var dynamoDb = new AWS.DynamoDB({ apiVersion: '2012-08-10', endpoint: endPoint });
 
 exports.handler = async (event) => {
-    var id = parseInt(JSON.parse(event.body).id);
-    var name = JSON.parse(event.body).name;
+    //var id = parseInt(JSON.parse(event.body).id);
+    var id = JSON.parse(event.body).id;
+    var name = JSON.parse(event.body).title;
     var params = {
         'ExpressionAttributeNames': {
             '#NA': 'name',
@@ -22,7 +23,7 @@ exports.handler = async (event) => {
         'Key': {
             'id':
             {
-                'N': `${id}`
+                'S': `${id}`
             }
         },
         'ReturnValues': "ALL_NEW",
