@@ -22,7 +22,7 @@ exports.handler = async (event) => {
     for (var i = 0; i < data.Items.length; i++) {
         var item = data.Items[i]
         retData.push({
-            id: item.id.N,
+            id: item.id.S,
             title: item.name.S
         })
     }
