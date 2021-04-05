@@ -8,8 +8,9 @@ var endPoint = (process.env.LOCAL_ENDPOINT == "AWS::NoValue") ? null : process.e
 var dynamoDb = new AWS.DynamoDB({ apiVersion: '2012-08-10', endpoint: endPoint });
 
 exports.handler = async (event) => {
+    try {
     const id = uuidv4();
-    const name = JSON.parse(event.body).name;
+    const name = JSON.parse(event.body).title;
 
     const optionsArray = [];
     for(option in event.body.options) {
@@ -38,17 +39,30 @@ exports.handler = async (event) => {
         ,
     };
     var result;
-
-
-    try {
         result = await dynamoDb.putItem(params).promise();
+        response = {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:4200",
+                // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
+                // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
+            },
+            body: JSON.stringify(result)
+        };
+    
     } catch (err) {
         result = err;
+        response = {
+            statusCode: 500,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:4200",
+                // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
+                // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
+            },
+            body: JSON.stringify(result)
+        };
     }
-    const response = {
-        statusCode: 200,
-        body: JSON.stringify(result)
-    };
+
     return response;
 };
 
