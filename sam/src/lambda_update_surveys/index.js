@@ -36,6 +36,11 @@ exports.handler = async (event) => {
     }
     const response = {
         statusCode: 200,
+        headers: {
+            "Access-Control-Allow-Origin": "http://localhost:4200",
+            // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
+            // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
+        },
         body: JSON.stringify(result)
     };
     return response;

@@ -13,7 +13,7 @@ Parameters:
 Globals:
   Api:
     Cors:
-      AllowMethods: "''OPTIONS, POST, GET, PUT, DELETE''"
+      AllowMethods: "'OPTIONS, POST, GET, PUT, DELETE'"
       AllowHeaders: "'Content-Type, x-apikey, x-tenantid'"
       AllowOrigin: "'http://localhost:4200'"
 Resources:
@@ -69,7 +69,7 @@ Resources:
       Type: AWS::Serverless::Function
       Properties:
         Runtime: nodejs12.x
-        CodeUri: ./src/lambda_put_survey
+        CodeUri: ./src/lambda_put_surveys
         Handler: index.handler
         Environment:
           Variables:
