@@ -23,7 +23,7 @@ exports.handler = async (event) => {
         var item = data.Items[i]
         retData.push({
             id: item.id.N,
-            name: item.name.S
+            title: item.name.S
         })
     }
 

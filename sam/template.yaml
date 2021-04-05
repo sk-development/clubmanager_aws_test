@@ -13,7 +13,7 @@ Parameters:
 Globals:
   Api:
     Cors:
-      AllowMethods: "''OPTIONS,POST,GET''"
+      AllowMethods: "''OPTIONS, POST, GET, PUT, DELETE''"
       AllowHeaders: "'Content-Type, x-apikey, x-tenantid'"
       AllowOrigin: "'http://localhost:4200'"
 Resources:
