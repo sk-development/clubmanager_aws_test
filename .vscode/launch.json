@@ -2,6 +2,20 @@
     "configurations": [
 
         {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to SAM CLI start-api",
+            "address": "localhost",
+            "port": 5858,
+            "localRoot": "${workspaceRoot}/sam/src/lambda_create_survey",
+            "remoteRoot": "/var/task",
+            "protocol": "inspector",
+            "stopOnEntry": false
+          },
+
+  
+
+        {
             "type": "aws-sam",
             "request": "direct-invoke",
             "name": "API sam:GetSurveys",
