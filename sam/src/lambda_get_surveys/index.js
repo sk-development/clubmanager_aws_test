@@ -12,13 +12,26 @@ exports.handler = async (event) => {
     // console.log(event['requestContext']['identity']['id']);
     // console.log(event['requestContext']['identity']['id']);
 
+    // var id = JSON.parse(event.options).params
+    // if (id) {
+    //     var queryParams = {
+    //         TableName: process.env.TABLE_NAME,
+    //         Key: {
+    //             'id':
+    //             {
+    //                 'S': `${id}`
+    //             }
+    //         }
+    //     };
+    //     const data = await dynamoDb.getItem(queryParams).promise()
+    // } else {
+        var queryParams = {
+            TableName: process.env.TABLE_NAME,
+        };
+        const data = await dynamoDb.scan(queryParams).promise();
+    // }
+
     const retData = [];
-    var params = {
-        TableName: process.env.TABLE_NAME,
-    };
-
-    const data = await dynamoDb.scan(params).promise();
-
     for (var i = 0; i < data.Items.length; i++) {
         var item = data.Items[i]
         retData.push({
@@ -27,15 +40,30 @@ exports.handler = async (event) => {
         })
     }
 
-    const response = {
-        statusCode: 200,
-        headers: {
-            "Access-Control-Allow-Origin": "http://localhost:4200",
-            // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
-            // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
-        },
-        body: JSON.stringify(retData),
-    };
+    const response;
+    if(!JSON.parse(event.options)) {
+        response = {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:4200",
+                // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
+                // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
+            },
+            body: JSON.stringify(retData),
+        };
+    }
+
+    if (JSON.parse(event.options)) {
+        response = {
+            statusCode: 200,
+            headers: {
+                "Access-Control-Allow-Origin": "http://localhost:4200",
+                // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
+                // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
+            },
+            body: JSON.stringify(event),
+        }; 
+    }
 
     return response;
-};
+}
