@@ -16,6 +16,10 @@ Globals:
       AllowMethods: "'OPTIONS, POST, GET, PUT, DELETE'"
       AllowHeaders: "'Content-Type, x-apikey, x-tenantid'"
       AllowOrigin: "'http://localhost:4200'"
+  Function:
+    Environment:
+      Variables:
+        AWS: true
 Resources:
   SurveysTable:
     Type: AWS::Serverless::SimpleTable
@@ -46,12 +50,23 @@ Resources:
         Authorizers:
           LambdaAuthorizer:
             FunctionArn: !GetAtt LambdaAuthorizer.Arn
+  CommonLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+        LayerName: common-dependencies
+        Description: Common dependencies
+        ContentUri: src/layers/
+        CompatibleRuntimes:
+          - nodejs12.x
+        RetentionPolicy: Retain            
   GetSurveys:
       Type: AWS::Serverless::Function
       Properties:
         Runtime: nodejs12.x
         CodeUri: ./src/lambda_get_surveys
         Handler: index.handler
+        Layers:
+          - !Ref CommonLayer
         Environment:
           Variables:
             TABLE_NAME: !Ref SurveysTable
@@ -71,6 +86,8 @@ Resources:
         Runtime: nodejs12.x
         CodeUri: ./src/lambda_create_survey
         Handler: index.handler
+        Layers:
+          - !Ref CommonLayer
         Environment:
           Variables:
             TABLE_NAME: !Ref SurveysTable
@@ -90,6 +107,8 @@ Resources:
         Runtime: nodejs12.x
         CodeUri: ./src/lambda_delete_survey
         Handler: index.handler
+        Layers:
+          - !Ref CommonLayer
         Environment:
           Variables:
             TABLE_NAME: !Ref SurveysTable
@@ -109,6 +128,8 @@ Resources:
         Runtime: nodejs12.x
         CodeUri: ./src/lambda_update_survey
         Handler: index.handler
+        Layers:
+          - !Ref CommonLayer
         Environment:
           Variables:
             TABLE_NAME: !Ref SurveysTable

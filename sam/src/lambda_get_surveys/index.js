@@ -66,4 +66,28 @@ exports.handler = async (event) => {
     }
 
     return response;
+<<<<<<< HEAD
 }
+=======
+};
+
+
+
+
+
+
+// NEW VERSION
+// var cloudIntegration = require(process.env.AWS ? '/opt/aws-integration/index' : '../layers/aws-integration/index');
+
+// exports.handler = async (event) => {
+//     return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(businessLogic, event);
+// };
+
+// async function businessLogic(event) {
+//     var data = await cloudIntegration.SURVEY_REPOSITORY.getSurveys();
+//     return {
+//         executionSuccessful: true,
+//         data
+//     }
+// }
+>>>>>>> 4bb22ae695d0fecb06de3df1abe6003fcdcdd263
