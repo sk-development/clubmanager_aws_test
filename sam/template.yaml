@@ -78,6 +78,12 @@ Resources:
             Type: Api
             Properties:
               RestApiId: !Ref SurveysAPI
+              Path: /surveys
+              Method: get
+          GetSurvey:
+            Type: Api
+            Properties:
+              RestApiId: !Ref SurveysAPI
               Path: /surveys/{surveyID}
               Method: get
   PutSurvey:

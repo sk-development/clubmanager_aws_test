@@ -12,69 +12,68 @@ exports.handler = async (event) => {
     // console.log(event['requestContext']['identity']['id']);
     // console.log(event['requestContext']['identity']['id']);
 
-    // var id = JSON.parse(event.options).params
-    // if (id) {
-    //     var queryParams = {
-    //         TableName: process.env.TABLE_NAME,
-    //         Key: {
-    //             'id':
-    //             {
-    //                 'S': `${id}`
-    //             }
-    //         }
-    //     };
-    //     const data = await dynamoDb.getItem(queryParams).promise()
-    // } else {
-        var queryParams = {
-            TableName: process.env.TABLE_NAME,
-        };
-        const data = await dynamoDb.scan(queryParams).promise();
-    // }
-
     const retData = [];
-    for (var i = 0; i < data.Items.length; i++) {
-        var item = data.Items[i]
+
+    if (event.queryStringParameters) {
+        var params = {
+            TableName: process.env.TABLE_NAME,
+            Key: {
+                id: {
+                    S: event.queryStringParameters.surveyID
+                }
+            }
+        };
+        const data = await dynamoDb.getItem(params).promise()
+
+        const textOptionsArray = [];
+        for(const option of data.Item.options.L) {
+            textOptionsArray.push({
+                optionsID: option.M.id.S,
+                optionsText: option.M.text.S,
+            })
+        }
+
         retData.push({
-            id: item.id.S,
-            title: item.name.S
+            id: data.Item.id.S,
+            title: data.Item.name.S,
+            description: data.Item.description.S,
+            validTo: data.Item.validTo.S,
+            textOptions: textOptionsArray
         })
     }
-
-    const response;
-    if(!JSON.parse(event.options)) {
-        response = {
-            statusCode: 200,
-            headers: {
-                "Access-Control-Allow-Origin": "http://localhost:4200",
-                // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
-                // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
-            },
-            body: JSON.stringify(retData),
+    else {
+        var params = {
+            TableName: process.env.TABLE_NAME,
         };
+        const data = await dynamoDb.scan(params).promise();
+
+        for (var i = 0; i < data.Items.length; i++) {
+            var item = data.Items[i]
+            retData.push({
+                id: item.id.S,
+                title: item.name.S
+            })
+        }
     }
 
-    if (JSON.parse(event.options)) {
-        response = {
-            statusCode: 200,
-            headers: {
-                "Access-Control-Allow-Origin": "http://localhost:4200",
-                // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
-                // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
-            },
-            body: JSON.stringify(event),
-        }; 
-    }
+    const response = {
+        statusCode: 200,
+        headers: {
+            "Access-Control-Allow-Origin": "http://localhost:4200",
+            // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
+            // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
+        },
+        body: JSON.stringify(retData),
+    };
 
     return response;
-<<<<<<< HEAD
-}
-=======
 };
 
 
 
 
-
+    // event.pathParameters.id
+    // event.queryStringParameters
 
 // NEW VERSION
 // var cloudIntegration = require(process.env.AWS ? '/opt/aws-integration/index' : '../layers/aws-integration/index');
@@ -90,4 +89,3 @@ exports.handler = async (event) => {
 //         data
 //     }
 // }
->>>>>>> 4bb22ae695d0fecb06de3df1abe6003fcdcdd263

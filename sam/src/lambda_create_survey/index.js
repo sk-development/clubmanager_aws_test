@@ -9,36 +9,48 @@ var dynamoDb = new AWS.DynamoDB({ apiVersion: '2012-08-10', endpoint: endPoint }
 
 exports.handler = async (event) => {
     try {
-    const id = uuidv4();
-    const name = JSON.parse(event.body).title;
+        const id = uuidv4();
+        const surveyParse = JSON.parse(event.body);
+        const name = surveyParse.title;
+        const description = surveyParse.description;
+        const validTo = surveyParse.validTo;
 
-    const optionsArray = [];
-    for(option in event.body.options) {
-        optionsArray.push(
-            { 'M': { 'index': { 'N': `${option.index}` }, 'text': { 'S': `${option.text}` } } },
-        )
-    }
-    var params = {
-        'TableName': `${process.env.TABLE_NAME}`,
-        'Item': {
-            'id':
-            {
-                'S': `${id}`
+        const optionsArray = [];
+        for(const option of surveyParse.options) {
+            const optionsId = uuidv4();
+            optionsArray.push(
+                { 'M': { 'id': { 'S': `${optionsId}` }, 'text': { 'S': `${option.text}` } } },
+            )
+        }
+        var params = {
+            'TableName': `${process.env.TABLE_NAME}`,
+            'Item': {
+                'id':
+                {
+                    'S': `${id}`
+                },
+                'name':
+                {
+                    'S': `${name}`
+                },
+                'description':
+                {
+                    'S': `${description}`
+                },
+                'validTo':
+                {
+                    'S': `${validTo}`
+                },
+                'options':
+                {
+                    'L':
+                        optionsArray
+                }
             },
-            'name':
-            {
-                'S': `${name}`
-            },
-            'options':
-            {
-                'L':
-                    optionsArray
-            }
-        },
-        'ReturnConsumedCapacity': 'TOTAL'
-        ,
-    };
-    var result;
+            'ReturnConsumedCapacity': 'TOTAL'
+            ,
+        };
+        var result;
         result = await dynamoDb.putItem(params).promise();
         response = {
             statusCode: 200,
@@ -49,7 +61,7 @@ exports.handler = async (event) => {
             },
             body: JSON.stringify(result)
         };
-    
+        
     } catch (err) {
         result = err;
         response = {
