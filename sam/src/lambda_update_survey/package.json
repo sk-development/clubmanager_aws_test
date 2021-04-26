@@ -1,5 +1,5 @@
 {
-  "name": "aws-integration",
+  "name": "lambda_update_survey",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/util-dynamodb": "^3.12.0",
-    "aws-sdk": "^2.823.0"
+    "@aws-sdk/util-dynamodb": "^3.12.0"
   }
 }

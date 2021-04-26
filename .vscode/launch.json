@@ -70,6 +70,54 @@
                     }
                 }
             },
-        }
+        },
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "API sam:UpdateSurveys",
+            "sam": {
+                "dockerNetwork": "localstack_default"
+            },
+            "invokeTarget": {
+                "target": "api",
+                "templatePath": "sam/template.yaml",
+                "logicalId": "UpdateSurveys"
+            },
+            "lambda": {
+                "environmentVariables": {
+                    "LOCAL_ENDPOINT": "http://localstack_main:4566",
+                    "TABLE_NAME": "SurveysTable"
+                }
+            },
+            "api": {
+                "path": "/surveys",
+                "httpMethod": "put",
+                "payload": {
+                    "json": {}
+                }
+            },
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to SAM CLI updateSurvey",
+            "address": "localhost",
+            "port": 5858,
+            "localRoot": "${workspaceRoot}/sam/src/lambda_update_survey",
+            "remoteRoot": "/var/task",
+            "protocol": "inspector",
+            "stopOnEntry": false
+            },
+            {
+                "type": "node",
+                "request": "attach",
+                "name": "Attach to SAM CLI deleteSurvey",
+                "address": "localhost",
+                "port": 5858,
+                "localRoot": "${workspaceRoot}/sam/src/lambda_delete_survey",
+                "remoteRoot": "/var/task",
+                "protocol": "inspector",
+                "stopOnEntry": false
+                },
     ]
 }
