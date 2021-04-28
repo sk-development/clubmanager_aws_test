@@ -25,8 +25,8 @@ async function getSurveys() {
     //     })
         })
     }
-    // return retData;
-    return data;
+    return retData;
+    // return data;
 }
 
 async function getSurvey(event) {
