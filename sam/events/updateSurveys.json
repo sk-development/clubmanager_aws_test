@@ -3,5 +3,5 @@
     "headers": {
         "content-type": "application/json"
     },
-    "body": "{\"id\":\"0\", \"name\":\"myUpdatedSurvey\"}"
+    "body": "{\"id\":\"e4346a00-14ce-4a8a-b2f8-06e55e7a0d08\", \"title\":\"newUpdate\", \"validTo\":\"0000-00-00\",\"description\":\"newUpdate\", \"options\":[{\"index\":\"0\",\"text\":\"newestOption1\"},{\"index\":\"1\",\"text\":\"newestOption2\"}]}"
 }
