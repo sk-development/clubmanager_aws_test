@@ -29,6 +29,10 @@ async function handleAsync(businessLogicCallback, event) {
 
 function handleResult(result) {
     var statusCode;
+    // isn't executionSuccessful always true? See lambda_get_surveys.index
+    // Or just for the special case of getting all surveys, because with no input parameter present nothing can go wrong
+    // expect the 500-error handled by the handleAsync function?
+    // POssible solution see lambda_get_surveys.index
     if (result.executionSuccessful) {
         statusCode = 200;
     }

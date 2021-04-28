@@ -25,7 +25,7 @@ aws dynamodb put-item \
     --table-name SurveysTable \
     --item '{
         "id": {"S": "e4346a00-14ce-4a8a-b2f8-06e55e7a0d08"},
-        "name": {"S": "Another survey"} ,
+        "title": {"S": "Another survey"} ,
         "description": {"S": "Another description"},
         "validTo": {"S": "30.02.2022"},
         "options": { "L": [ { "M" : { "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a8090" }, "text" : { "S" : "option1" } } }, { "M" : { "id" : { "S" : "d8f7153c-5a23-4a59-8b10-6ecbaf86655d" }, "text" : { "S" : "option2" } } }, { "M" : { "id" : { "S" : "122d4dd9-7582-408b-91f1-8d5d6a4c0d72" }, "text" : { "S" : "option3" } } } ] }

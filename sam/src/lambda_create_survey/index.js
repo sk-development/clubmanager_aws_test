@@ -29,7 +29,7 @@ exports.handler = async (event) => {
                 {
                     'S': `${id}`
                 },
-                'name':
+                'title':
                 {
                     'S': `${name}`
                 },
