@@ -11,46 +11,55 @@ exports.handler = async (event) => {
     try {
         const id = uuidv4();
         const surveyParse = JSON.parse(event.body);
-        const name = surveyParse.title;
-        const description = surveyParse.description;
-        const validTo = surveyParse.validTo;
+        // const name = surveyParse.title;
+        // const description = surveyParse.description;
+        // const validTo = surveyParse.validTo;
 
         const optionsArray = [];
         for(const option of surveyParse.options) {
             const optionsId = uuidv4();
             optionsArray.push(
-                { 'M': { 'id': { 'S': `${optionsId}` }, 'text': { 'S': `${option.text}` } } },
+                // { 'M': { 'id': { 'S': optionsId }, 'text': { 'S': option.text } } },
+                {id: optionsId, text: option.text},
             )
         }
+
         var params = {
-            'TableName': `${process.env.TABLE_NAME}`,
-            'Item': {
-                'id':
-                {
-                    'S': `${id}`
-                },
-                'title':
-                {
-                    'S': `${name}`
-                },
-                'description':
-                {
-                    'S': `${description}`
-                },
-                'validTo':
-                {
-                    'S': `${validTo}`
-                },
-                'options':
-                {
-                    'L':
-                        optionsArray
-                }
-            },
-            'ReturnConsumedCapacity': 'TOTAL'
+            TableName: process.env.TABLE_NAME,
+            Item: marshall({
+                id: id,
+                title: surveyParse.title,
+                validTo: surveyParse.validTo,
+                description: surveyParse.description,
+                options: optionsArray
+            }),
+            // 'Item': {
+            //     'id':
+            //     {
+            //         'S': `${id}`
+            //     },
+            //     'title':
+            //     {
+            //         'S': `${name}`
+            //     },
+            //     'description':
+            //     {
+            //         'S': `${description}`
+            //     },
+            //     'validTo':
+            //     {
+            //         'S': `${validTo}`
+            //     },
+            //     'options':
+            //     {
+            //         'L':
+            //             optionsArray
+            //     }
+            // },
+            ReturnConsumedCapacity: 'TOTAL'
             ,
         };
-        var result;
+        var result, response;
         result = await dynamoDb.putItem(params).promise();
         response = {
             statusCode: 200,

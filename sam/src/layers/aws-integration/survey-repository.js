@@ -29,6 +29,34 @@ async function getSurveys() {
     return data;
 }
 
+async function getSurvey(event) {
+    const retData = [];
+    var params = {
+        TableName: process.env.TABLE_NAME,
+        Key: marshall({
+            id: event['pathParameters']['surveyID']
+        }),
+    };
+    const data = await dynamoDb.getItem(params).promise()
+
+    const textOptionsArray = [];
+    for(const option of data.Item.options.L) {
+        textOptionsArray.push({
+            optionsID: option.M.id.S,
+            optionsText: option.M.text.S,
+        })
+    }
+
+    retData.push({
+        id: data.Item.id.S,
+        title: data.Item.title.S,
+        description: data.Item.description.S,
+        validTo: data.Item.validTo.S,
+        textOptions: textOptionsArray
+    })
+    return retData;
+}
+
 async function updateSurvey(event) {
     const data = JSON.parse(event.body)
     var params = {
@@ -69,36 +97,6 @@ async function deleteSurvey(event) {
         result = err;
     }
     return result;
-}
-
-async function getSurvey(event) {
-    const retData = [];
-    var params = {
-        TableName: process.env.TABLE_NAME,
-        Key: {
-            id: {
-                S: event['pathParameters']['surveyID']
-            }
-        }
-    };
-    const data = await dynamoDb.getItem(params).promise()
-
-    const textOptionsArray = [];
-    for(const option of data.Item.options.L) {
-        textOptionsArray.push({
-            optionsID: option.M.id.S,
-            optionsText: option.M.text.S,
-        })
-    }
-
-    retData.push({
-        id: data.Item.id.S,
-        title: data.Item.title.S,
-        description: data.Item.description.S,
-        validTo: data.Item.validTo.S,
-        textOptions: textOptionsArray
-    })
-    return retData;
 }
 
 module.exports = {
