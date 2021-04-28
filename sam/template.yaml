@@ -126,7 +126,7 @@ Resources:
             Type: Api
             Properties:
               RestApiId: !Ref SurveysAPI
-              Path: /surveys
+              Path: /surveys/{surveyID}
               Method: delete
   UpdateSurveys:
       Type: AWS::Serverless::Function
@@ -147,7 +147,7 @@ Resources:
             Type: Api
             Properties:
               RestApiId: !Ref SurveysAPI
-              Path: /surveys
+              Path: /surveys/{surveyID}
               Method: put
   LambdaAuthorizer:
       Type: AWS::Serverless::Function
