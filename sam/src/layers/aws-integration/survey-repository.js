@@ -1,32 +1,23 @@
 var dynamoDbCommon = require('./dynamoDb-common');
 var dynamoDb = dynamoDbCommon.getDynamoDb();
 const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
+const { v4: uuidv4 } = require('uuid');
+
 
 async function getSurveys() {
     const retData = [];
     var params = {
         TableName: process.env.TABLE_NAME,
     };
-
     const data = await dynamoDb.scan(params).promise();
     for (var i = 0; i < data.Items.length; i++) {
         var item = data.Items[i]
         retData.push({
             id: item.id.S,
             title: item.title.S
-    // for (var i = 0; i < data.Items.length; i++) {
-    //     var item = data.Items[i]
-    //     retData.push({
-    //         id: item.id.S,
-    //         title: item.title.S,
-    //         validTo: item.validTo.S,
-    //         description: item.description.S,
-    //         options: item.options.L
-    //     })
         })
     }
     return retData;
-    // return data;
 }
 
 async function getSurvey(event) {
@@ -40,7 +31,7 @@ async function getSurvey(event) {
     const data = await dynamoDb.getItem(params).promise()
 
     const textOptionsArray = [];
-    for(const option of data.Item.options.L) {
+    for (const option of data.Item.options.L) {
         textOptionsArray.push({
             optionsID: option.M.id.S,
             optionsText: option.M.text.S,
@@ -99,9 +90,43 @@ async function deleteSurvey(event) {
     return result;
 }
 
+async function createSurvey(event) {
+    const id = uuidv4();
+    const surveyParse = JSON.parse(event.body);
+    const optionsArray = [];
+    for (const option of surveyParse.options) {
+        const optionsId = uuidv4();
+        optionsArray.push(
+            { id: optionsId, text: option.text },
+        )
+    }
+
+    var params = {
+        TableName: process.env.TABLE_NAME,
+        Item: marshall({
+            id: id,
+            title: surveyParse.title,
+            validTo: surveyParse.validTo,
+            description: surveyParse.description,
+            options: optionsArray
+        }),
+        ReturnConsumedCapacity: 'TOTAL'
+        ,
+    };
+    var result;
+    try {
+        result = await dynamoDb.putItem(params).promise();
+        result = 'Success';
+    } catch (err) {
+        result = err;
+    }
+    return result;
+}
+
 module.exports = {
     getSurveys: getSurveys,
     getSurvey: getSurvey,
     updateSurvey: updateSurvey,
-    deleteSurvey: deleteSurvey
+    deleteSurvey: deleteSurvey,
+    createSurvey: createSurvey
 };
