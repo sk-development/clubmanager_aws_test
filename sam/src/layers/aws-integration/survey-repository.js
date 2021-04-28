@@ -34,7 +34,7 @@ async function updateSurvey(event) {
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            id: data.id
+            id: event['pathParameters']['surveyID']
         }),
         UpdateExpression: "set title = :t, validTo=:v, description=:d, options=:o",
         ExpressionAttributeValues: marshall({
@@ -55,7 +55,6 @@ async function updateSurvey(event) {
 }
 
 async function deleteSurvey(event) {
-    const data = JSON.parse(event.body)
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
