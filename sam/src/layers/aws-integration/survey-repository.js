@@ -20,12 +20,12 @@ async function getSurveys() {
     return retData;
 }
 
-async function getSurvey(event) {
+async function getSurvey(surveyId) {
     const retData = [];
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            id: event['pathParameters']['surveyID']
+            id: surveyId
         }),
     };
     const data = await dynamoDb.getItem(params).promise()

@@ -78,21 +78,22 @@ exports.handler = async (event) => {
 
 async function businessLogic(event) {
     // auf dieser Ebene kein try-catch sondern data validation
-    try {
         if (!event['pathParameters']) {
             var data = await cloudIntegration.SURVEY_REPOSITORY.getSurveys();
         } else {
             // hier gleich die ID rein
-            var data = await cloudIntegration.SURVEY_REPOSITORY.getSurvey(event);
+            const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i;
+            var surveyId = event['pathParameters']['surveyID'];
+            if (uuidV4Regex.test(surveyId)) {
+                var data = await cloudIntegration.SURVEY_REPOSITORY.getSurvey(surveyId);
+            } else {
+                return {
+                    executionSuccessful: false,
+                }
+            }
         }
         return {
             executionSuccessful: true,
             data
         }
-    } catch (err) {
-        return {
-            executionSuccessful: false,
-            err
-        }
-    }
 }
