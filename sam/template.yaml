@@ -197,35 +197,12 @@ Resources:
               RestApiId: !Ref ParticipationsAPI
               Path: /participations/survey/{surveyID}
               Method: get
-  #watch out for singular in the following paths
-  GetParticipation:
-      Type: AWS::Serverless::Function
-      Properties:
-        Runtime: nodejs12.x
-        CodeUri: ./src/lambda_get_participation
-        Handler: index.handler
-        Layers:
-          - !Ref CommonLayer
-        Environment:
-          Variables:
-            TABLE_NAME: !Ref ParticipationsTable
-            LOCAL_ENDPOINT: !Ref LocalEndpoint
-        Role:
-          Ref: LambdaExecutionRole
-        Events:
           GetParticipationById:
             Type: Api
             Properties:
               RestApiId: !Ref ParticipationsAPI
-              Path: /participation/{participationID}
+              Path: /participations/participationId/{participationID}
               Method: get
-          GetParticipationFromIndex:
-            Type: Api
-            Properties:
-              RestApiId: !Ref ParticipationsAPI
-              Path: /participation/{userID}/{surveyID}
-              Method: get
-  #https://stackoverflow.com/questions/62496620/provide-multiple-path-parameters-to-api-gateway-serverless
   LambdaAuthorizer:
       Type: AWS::Serverless::Function
       Properties:

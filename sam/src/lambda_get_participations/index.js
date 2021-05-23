@@ -15,7 +15,7 @@ async function businessLogic(event) {
             const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i;
             if(event['pathParameters']['userID']) {
                 var userId = event['pathParameters']['userID'];
-                if (uuidV4Regex.test(userId)) {
+                if (true/*uuidV4Regex.test(userId)*/) {
                     var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getUserParticipations(userId);
                 } else {
                     return {
@@ -27,6 +27,16 @@ async function businessLogic(event) {
                 var surveyId = event['pathParameters']['surveyID'];
                 if (uuidV4Regex.test(surveyId)) {
                     var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getSurveyParticipations(surveyId);
+                } else {
+                    return {
+                        executionSuccessful: false,
+                    }
+                }
+            }
+            if(event['pathParameters']['participationID']) {
+                var participationId = event['pathParameters']['participationID'];
+                if (uuidV4Regex.test(participationId)) {
+                    var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getParticipationById(participationId);
                 } else {
                     return {
                         executionSuccessful: false,
