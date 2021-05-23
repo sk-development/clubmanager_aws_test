@@ -119,10 +119,61 @@ async function getParticipationFromIndex(participationId) {
     return retData;
 }
 
+async function createParticipation(event){
+    const id = uuidv4();
+    const surveyParse = JSON.parse(event.body);
+    var params = {
+        TableName: process.env.TABLE_NAME,
+        Item: marshall({
+            participationId: id,
+            userId: surveyParse.userId,
+            surveyId: surveyParse.surveyId,
+            notation: surveyParse.notation,
+            editedOptionsIds: surveyParse.editedOptionsIds
+        }),
+        ReturnConsumedCapacity: 'TOTAL',
+    };
+    var result;
+    try {
+        result = await dynamoDb.putItem(params).promise();
+        result = 'Success';
+    } catch (err) {
+        result = err;
+    }
+    return result;
+}
+
+async function updateParticipation(event) {
+    const data = JSON.parse(event.body)
+    var params = {
+        TableName: process.env.TABLE_NAME,
+        Key: marshall({
+            id: event['pathParameters']['participationID']
+        }),
+        UpdateExpression: "set participationID = :n, editedOptionsIds = :eO",
+        ExpressionAttributeValues: marshall({
+            ":n": data.notation,
+            ":eO": data.editedOptionsIds
+        }),
+    }
+    var result;
+    try {
+        const item = await dynamoDb.updateItem(params).promise();
+        result = 'Success';
+    } catch (err) {
+        result = err;
+    }
+    return result;
+}
+
+
+
 module.exports = {
     getAllParticipations: getAllParticipations,
     getUserParticipations: getUserParticipations,
     getSurveyParticipations: getSurveyParticipations,
     getParticipationById: getParticipationById,
-    getParticipationFromIndex: getParticipationFromIndex
+    getParticipationFromIndex: getParticipationFromIndex,
+    createParticipation: createParticipation,
+    updateParticipation: updateParticipation
 };

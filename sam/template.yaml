@@ -226,6 +226,48 @@ Resources:
               Path: /participation/{userID}/{surveyID}
               Method: get
   #https://stackoverflow.com/questions/62496620/provide-multiple-path-parameters-to-api-gateway-serverless
+    PutParticipation:
+      Type: AWS::Serverless::Function
+      Properties:
+        Runtime: nodejs12.x
+        CodeUri: ./src/lambda_create_participation
+        Handler: index.handler
+        Layers:
+          - !Ref CommonLayer
+        Environment:
+          Variables:
+            TABLE_NAME: !Ref SurveysTable
+            LOCAL_ENDPOINT: !Ref LocalEndpoint
+        Role:
+          Ref: LambdaExecutionRole
+        Events:
+          PutSurveys:
+            Type: Api
+            Properties:
+              RestApiId: !Ref ParticipationAPI
+              Path: /participation
+              Method: post
+  UpdateParticipation:
+      Type: AWS::Serverless::Function
+      Properties:
+        Runtime: nodejs12.x
+        CodeUri: ./src/lambda_update_participation
+        Handler: index.handler
+        Layers:
+          - !Ref CommonLayer
+        Environment:
+          Variables:
+            TABLE_NAME: !Ref SurveysTable
+            LOCAL_ENDPOINT: !Ref LocalEndpoint
+        Role:
+          Ref: LambdaExecutionRole
+        Events:
+          UpdateSurveys:
+            Type: Api
+            Properties:
+              RestApiId: !Ref ParticipationAPI
+              Path: /participation/{participationID}
+              Method: put
   LambdaAuthorizer:
       Type: AWS::Serverless::Function
       Properties:
