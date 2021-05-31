@@ -19,17 +19,22 @@ async function getAllParticipations() {
     return retData;
 }
 
-async function getUserParticipations() {
+async function getUserParticipations(userId) {
     const retData = [];
     var params = {
         TableName: process.env.TABLE_NAME,
-    };
-    const data = await dynamoDb.scan(params).promise();
+        IndexName: "UserIndex",
+        KeyConditionExpression: "userId = :userId",
+        ExpressionAttributeValues: marshall({
+            ":userId": userId
+        }),
+    }
+    const data = await dynamoDb.query(params).promise();
     for (var i = 0; i < data.Items.length; i++) {
-        var item = data.Items[i]
+        var item = data.Items[i];
         retData.push({
-            id: item.id.S,
-            title: item.title.S
+            participationId: item.participationId.S,
+            surveyId: item.surveyId.S
         })
     }
     return retData;
@@ -64,30 +69,19 @@ async function getSurveyParticipations(surveyId) {
 }
 
 async function getParticipationById(participationId) {
-    const retData = [];
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            id: surveyId
+            participationId: participationId
         }),
     };
-    const data = await dynamoDb.getItem(params).promise()
-
-    const textOptionsArray = [];
-    for (const option of data.Item.options.L) {
-        textOptionsArray.push({
-            optionsID: option.M.id.S,
-            optionsText: option.M.text.S,
-        })
+    const {Item} = await dynamoDb.getItem(params).promise()
+    const retData = unmarshall(Item);
+    const editedOptionsIdsArray = [];
+    for (const option of Item.editedOptionsIds.L) {
+        editedOptionsIdsArray.push(option.M.id.S)
     }
-
-    retData.push({
-        id: data.Item.id.S,
-        title: data.Item.title.S,
-        description: data.Item.description.S,
-        validTo: data.Item.validTo.S,
-        textOptions: textOptionsArray
-    })
+    retData.editedOptionsIds = editedOptionsIdsArray;
     return retData;
 }
 
@@ -121,15 +115,15 @@ async function getParticipationFromIndex(participationId) {
 
 async function createParticipation(event){
     const id = uuidv4();
-    const surveyParse = JSON.parse(event.body);
+    const data = JSON.parse(event.body);
     var params = {
         TableName: process.env.TABLE_NAME,
         Item: marshall({
             participationId: id,
-            userId: surveyParse.userId,
-            surveyId: surveyParse.surveyId,
-            notation: surveyParse.notation,
-            editedOptionsIds: surveyParse.editedOptionsIds
+            userId: data.userId,
+            surveyId: data.surveyId,
+            notation: data.notation,
+            editedOptionsIds: data.editedOptionsObjectArray
         }),
         ReturnConsumedCapacity: 'TOTAL',
     };
@@ -148,12 +142,12 @@ async function updateParticipation(event) {
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            id: event['pathParameters']['participationID']
+            participationId: event['pathParameters']['participationID']
         }),
-        UpdateExpression: "set participationID = :n, editedOptionsIds = :eO",
+        UpdateExpression: "set notation = :n, editedOptionsIds = :eO",
         ExpressionAttributeValues: marshall({
             ":n": data.notation,
-            ":eO": data.editedOptionsIds
+            ":eO": data.editedOptionsObjectArray
         }),
     }
     var result;
@@ -165,7 +159,6 @@ async function updateParticipation(event) {
     }
     return result;
 }
-
 
 
 module.exports = {

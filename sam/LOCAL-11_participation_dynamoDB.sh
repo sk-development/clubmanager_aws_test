@@ -58,7 +58,7 @@
 #     --return-consumed-capacity TOTAL
 
 # return all items inside ParticipationsTable
-# aws dynamodb scan --endpoint-url http://localhost:4566 --table-name ParticipationsTable
+aws dynamodb scan --endpoint-url http://localhost:4566 --table-name ParticipationsTable
 
 # query global secondary index: surveyIndex --> query = get record based on conditions
 # aws dynamodb query \
@@ -78,4 +78,4 @@
 # aws dynamodb delete-table --table-name ParticipationsTable --endpoint-url http://localhost:4566
 
 # list ParticipationsTable
-aws dynamodb list-tables --endpoint-url http://localhost:4566
+# aws dynamodb list-tables --endpoint-url http://localhost:4566

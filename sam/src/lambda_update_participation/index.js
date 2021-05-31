@@ -5,7 +5,7 @@ exports.handler = async (event) => {
 };
 
 async function businessLogic(event) {
-    var data = await cloudIntegration.PARTICIPATION_REPOSITORY.updateParticipation(event)
+    var data = await cloudIntegration.PARTICIPATION_REPOSITORY.updateParticipation(event);
     return {
         executionSuccessful: true,
         data

@@ -197,12 +197,17 @@ Resources:
               RestApiId: !Ref ParticipationsAPI
               Path: /participations/survey/{surveyID}
               Method: get
-  #watch out for singular in the following paths
-  GetParticipation:
+          GetParticipationById:
+            Type: Api
+            Properties:
+              RestApiId: !Ref ParticipationsAPI
+              Path: /participations/participationId/{participationID}
+              Method: get
+  PutParticipation:
       Type: AWS::Serverless::Function
       Properties:
         Runtime: nodejs12.x
-        CodeUri: ./src/lambda_get_participation
+        CodeUri: ./src/lambda_create_participation
         Handler: index.handler
         Layers:
           - !Ref CommonLayer
@@ -213,39 +218,11 @@ Resources:
         Role:
           Ref: LambdaExecutionRole
         Events:
-          GetParticipationById:
+          PutParticipation:
             Type: Api
             Properties:
               RestApiId: !Ref ParticipationsAPI
-              Path: /participation/{participationID}
-              Method: get
-          GetParticipationFromIndex:
-            Type: Api
-            Properties:
-              RestApiId: !Ref ParticipationsAPI
-              Path: /participation/{userID}/{surveyID}
-              Method: get
-  #https://stackoverflow.com/questions/62496620/provide-multiple-path-parameters-to-api-gateway-serverless
-    PutParticipation:
-      Type: AWS::Serverless::Function
-      Properties:
-        Runtime: nodejs12.x
-        CodeUri: ./src/lambda_create_participation
-        Handler: index.handler
-        Layers:
-          - !Ref CommonLayer
-        Environment:
-          Variables:
-            TABLE_NAME: !Ref SurveysTable
-            LOCAL_ENDPOINT: !Ref LocalEndpoint
-        Role:
-          Ref: LambdaExecutionRole
-        Events:
-          PutSurveys:
-            Type: Api
-            Properties:
-              RestApiId: !Ref ParticipationAPI
-              Path: /participation
+              Path: /participations
               Method: post
   UpdateParticipation:
       Type: AWS::Serverless::Function
@@ -257,16 +234,16 @@ Resources:
           - !Ref CommonLayer
         Environment:
           Variables:
-            TABLE_NAME: !Ref SurveysTable
+            TABLE_NAME: !Ref ParticipationsTable
             LOCAL_ENDPOINT: !Ref LocalEndpoint
         Role:
           Ref: LambdaExecutionRole
         Events:
-          UpdateSurveys:
+          UpdateSingleParticipation:
             Type: Api
             Properties:
-              RestApiId: !Ref ParticipationAPI
-              Path: /participation/{participationID}
+              RestApiId: !Ref ParticipationsAPI
+              Path: /participations/{participationID}
               Method: put
   LambdaAuthorizer:
       Type: AWS::Serverless::Function
