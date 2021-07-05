@@ -8,8 +8,6 @@ Parameters:
   LocalEndpoint: 
     Type: String
     Default: AWS::NoValue
-  DeploymentBucket:
-    Type: String
 Globals:
   Api:
     Cors:
