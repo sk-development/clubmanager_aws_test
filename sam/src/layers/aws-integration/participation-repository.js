@@ -75,7 +75,7 @@ async function getParticipationById(participationId) {
             participationId: participationId
         }),
     };
-    const {Item} = await dynamoDb.getItem(params).promise()
+    const { Item } = await dynamoDb.getItem(params).promise()
     const retData = unmarshall(Item);
     const editedOptionsIdsArray = [];
     for (const option of Item.editedOptionsIds.L) {
@@ -113,28 +113,36 @@ async function getParticipationFromIndex(participationId) {
     return retData;
 }
 
-async function createParticipation(event){
+async function createParticipation(event) {
     const id = uuidv4();
     const data = JSON.parse(event.body);
-    var params = {
-        TableName: process.env.TABLE_NAME,
-        Item: marshall({
-            participationId: id,
-            userId: data.userId,
-            surveyId: data.surveyId,
-            notation: data.notation,
-            editedOptionsIds: data.editedOptionsObjectArray
-        }),
-        ReturnConsumedCapacity: 'TOTAL',
-    };
-    var result;
-    try {
-        result = await dynamoDb.putItem(params).promise();
-        result = 'Success';
-    } catch (err) {
-        result = err;
-    }
-    return result;
+    await checkUserId(event, data.userId)
+        .then(result => {
+            if (result.valid == true) {
+                var params = {
+                    TableName: process.env.TABLE_NAME,
+                    Item: marshall({
+                        participationId: id,
+                        userId: data.userId,
+                        surveyId: data.surveyId,
+                        notation: data.notation,
+                        editedOptionsIds: data.editedOptionsObjectArray
+                    }),
+                    ReturnConsumedCapacity: 'TOTAL',
+                };
+                var result;
+                try {
+                    result = await dynamoDb.putItem(params).promise();
+                    result = 'Success';
+                } catch (err) {
+                    result = err;
+                }
+            } else {
+                return result;
+            }
+        }
+        )
+        .catch(err);
 }
 
 async function updateParticipation(event) {
@@ -158,6 +166,44 @@ async function updateParticipation(event) {
         result = err;
     }
     return result;
+}
+
+async function checkUserId(event, userId) {
+    return new Promise((resolve, reject) => {
+        const key = event["headers"]["x-apikey"];
+        // how to access the x-apikey from the event!?
+        // const key = event["headers"]["apikey"];
+        // const key = event.apikey; 
+        const options = {
+            host: `${process.env.host}`,
+            path: '/api/mod-survey-validation',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-apikey': key,
+                'x-tenantid': 1
+            },
+            body: {
+                'userIds': [userId]
+            }
+        };
+
+        //create the request object with the callback with the result
+        const req = https.request(options, (res) => {
+            resolve(JSON.stringify(res));
+        });
+
+        // handle the possible errors
+        req.on('error', (e) => {
+            reject(e.message);
+        });
+
+        //do the request
+        req.write(JSON.stringify(data));
+
+        //finish the request
+        req.end();
+    });
 }
 
 

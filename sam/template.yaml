@@ -20,6 +20,8 @@ Globals:
     Environment:
       Variables:
         AWS: true
+        HOST: "http://localhost:8090"
+        XACCESSTOKEN: "366EB3BD45CE5CE769F0B8BFD3472A482B07EC1F32E56ADA1625B8A7FB324B66"
 Resources:
   SurveysTable:
     Type: AWS::Serverless::SimpleTable
@@ -70,7 +72,7 @@ Resources:
     Properties:
         LayerName: common-dependencies
         Description: Common dependencies
-        ContentUri: src/layers/
+        ContentUri: src/layers/aws-integration
         CompatibleRuntimes:
           - nodejs12.x
         RetentionPolicy: Retain            
