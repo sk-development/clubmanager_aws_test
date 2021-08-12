@@ -10,6 +10,7 @@ PREFIX=<Prefix for all generated resources>
 TIME=$(date +%s%3)
 
 STACKNAME=<Name for the stack> # HINT: Only chars/numbers and "-" allowed
+BUCKET=<>
 
 
 # Lambda properties
