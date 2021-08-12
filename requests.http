@@ -16,5 +16,38 @@ Authorization: 12345
 
 ###
 
-https://1y894i8x4c.execute-api.eu-central-1.amazonaws.com/stage/surveys
-Authorization: 12345
+GET https://08o9per9mc.execute-api.eu-central-1.amazonaws.com/Prod/surveys
+accept: application/json, text/plain, */*
+accept-encoding: gzip, deflate, br
+accept-language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control: no-cache
+origin: http://localhost:4200
+pragma: no-cache
+referer: http://localhost:4200/
+sec-ch-ua: "Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"
+sec-ch-ua-mobile: ?1
+sec-fetch-dest: empty
+sec-fetch-mode: cors
+sec-fetch-site: cross-site
+user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36
+x-apikey: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2Mjg3NzA3NTksImp0aSI6InlqOGtDNW9LVlpCdkc2UFNVS1ZYd1E9PSIsImRhdGEiOnsidXNlcklkIjoyLCJ1c2VyTmFtZSI6Im1laW4udmVyZWluLmFkbWluIn19.3nEl1Yzd9yCUBnKv5VlgzNgFAtCZDRgMB3rAsa_Et6zwZs2kKfMNzJJFLcxywe8V6fklbIz6_HWTF2RgjbkbBA
+x-tenantid: 1
+
+###
+
+GET https://08o9per9mc.execute-api.eu-central-1.amazonaws.com/Prod/participations/user/2
+accept: application/json, text/plain, */*
+accept-encoding: gzip, deflate, br
+accept-language: de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7
+cache-control: no-cache
+origin: http://localhost:4200
+pragma: no-cache
+referer: http://localhost:4200/
+sec-ch-ua: "Chromium";v="92", " Not A;Brand";v="99", "Google Chrome";v="92"
+sec-ch-ua-mobile: ?1
+sec-fetch-dest: empty
+sec-fetch-mode: cors
+sec-fetch-site: cross-site
+user-agent: Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Mobile Safari/537.36
+x-apikey: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2Mjg3NzA3NTksImp0aSI6InlqOGtDNW9LVlpCdkc2UFNVS1ZYd1E9PSIsImRhdGEiOnsidXNlcklkIjoyLCJ1c2VyTmFtZSI6Im1laW4udmVyZWluLmFkbWluIn19.3nEl1Yzd9yCUBnKv5VlgzNgFAtCZDRgMB3rAsa_Et6zwZs2kKfMNzJJFLcxywe8V6fklbIz6_HWTF2RgjbkbBA
+x-tenantid: 1
