@@ -25,17 +25,57 @@ Globals:
         AWS: true
 Resources:
   SurveysTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: id
-        Type: String
+      AttributeDefinitions: 
+        - 
+          AttributeName: "id"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+      BillingMode: "PAY_PER_REQUEST"
   ParticipationsTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: participationId
-        Type: String
+      AttributeDefinitions: 
+        - 
+          AttributeName: "participationId"
+          AttributeType: "S"
+        - 
+          AttributeName: "userId"
+          AttributeType: "S"
+        - 
+          AttributeName: "surveyId"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "participationId"
+          KeyType: "HASH"
+      GlobalSecondaryIndexes: 
+        - 
+          IndexName: "SurveyIndexAll"
+          KeySchema: 
+            - 
+              AttributeName: "surveyId"
+              KeyType: "HASH"
+            - 
+              AttributeName: "userId"
+              KeyType: "RANGE"
+          Projection: 
+            ProjectionType: "ALL"
+        - 
+          IndexName: "UserIndex"
+          KeySchema: 
+            - 
+              AttributeName: "userId"
+              KeyType: "HASH"
+          Projection: 
+            NonKeyAttributes: 
+              - "surveyId"
+            ProjectionType: "INCLUDE"
+      BillingMode: "PAY_PER_REQUEST"
   SurveysAPI:
     Type: AWS::Serverless::Api
     Properties:
