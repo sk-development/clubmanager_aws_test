@@ -1,25 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Parameters: 
-  # TableNameSurveys: 
-  #   Type: String
   LambdaExecutionRole: 
     Type: String
   LocalEndpoint: 
     Type: String
     Default: AWS::NoValue
+  AuthHost:
+    Type: String
+  AuthToken:
+    Type: String
 Globals:
-  Api:
-    Cors:
-      AllowMethods: "'OPTIONS, POST, GET, PUT, DELETE'"
-      AllowHeaders: "'Content-Type, x-apikey, x-tenantid'"
-      AllowOrigin: "'http://localhost:4200'"
   Function:
     Environment:
       Variables:
         AWS: true
-        HOST: "http://localhost:8090"
-        XACCESSTOKEN: "366EB3BD45CE5CE769F0B8BFD3472A482B07EC1F32E56ADA1625B8A7FB324B66"
 Resources:
   SurveysTable:
     Type: AWS::Serverless::SimpleTable
@@ -27,8 +22,6 @@ Resources:
       PrimaryKey:
         Name: id
         Type: String
-    #   TableName: 
-    #       Ref: TableNameSurveys
   ParticipationsTable:
     Type: AWS::Serverless::SimpleTable
     Properties:
@@ -39,27 +32,8 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
-      # Cors:
-      #   AllowMethods: "'OPTIONS,POST,GET'"
-      #   AllowHeaders: "'Content-Type, x-apikey, x-tenantid'"
-      #   AllowOrigin: "'http://localhost:4200'"
-      #   MaxAge: "'3600'"
-      #   AllowCredentials: True
-      # DefinitionBody:
-      #   Fn::Transform:
-      #     Name: AWS::Include
-      #     Parameters:
-      #       # Location: !Sub s3://${DeploymentBucket}/openapi.yaml #for production: TODO create s3 bucket with name 'DeploymentBucket' and put openapi.yaml file in it
-      #       Location: openapi_two.yaml #for local development
-      Auth:
-        DefaultAuthorizer: LambdaAuthorizer
-        Authorizers:
-          LambdaAuthorizer:
-            FunctionArn: !GetAtt LambdaAuthorizer.Arn
-  ParticipationsAPI:
-    Type: AWS::Serverless::Api
-    Properties:
-      StageName: Prod
+      EndpointConfiguration:
+        Type: REGIONAL
       Auth:
         DefaultAuthorizer: LambdaAuthorizer
         Authorizers:
@@ -182,25 +156,25 @@ Resources:
           GetAllParticipations:
             Type: Api
             Properties:
-              RestApiId: !Ref ParticipationsAPI
+              RestApiId: !Ref SurveysAPI
               Path: /participations
               Method: get
           GetUserParticipations:
             Type: Api
             Properties:
-              RestApiId: !Ref ParticipationsAPI
+              RestApiId: !Ref SurveysAPI
               Path: /participations/user/{userID}
               Method: get
           GetSurveyParticipations:
             Type: Api
             Properties:
-              RestApiId: !Ref ParticipationsAPI
+              RestApiId: !Ref SurveysAPI
               Path: /participations/survey/{surveyID}
               Method: get
           GetParticipationById:
             Type: Api
             Properties:
-              RestApiId: !Ref ParticipationsAPI
+              RestApiId: !Ref SurveysAPI
               Path: /participations/participationId/{participationID}
               Method: get
   PutParticipation:
@@ -221,7 +195,7 @@ Resources:
           PutParticipation:
             Type: Api
             Properties:
-              RestApiId: !Ref ParticipationsAPI
+              RestApiId: !Ref SurveysAPI
               Path: /participations
               Method: post
   UpdateParticipation:
@@ -242,7 +216,7 @@ Resources:
           UpdateSingleParticipation:
             Type: Api
             Properties:
-              RestApiId: !Ref ParticipationsAPI
+              RestApiId: !Ref SurveysAPI
               Path: /participations/{participationID}
               Method: put
   LambdaAuthorizer:
@@ -253,3 +227,9 @@ Resources:
         Handler: index.handler
         Role:
           Ref: LambdaExecutionRole
+        Environment:
+          Variables:
+            HOST:
+              Ref: AuthHost
+            XACCESSTOKEN:
+              Ref: AuthToken
