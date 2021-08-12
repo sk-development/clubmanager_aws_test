@@ -49,7 +49,7 @@ Resources:
     Properties:
         LayerName: common-dependencies
         Description: Common dependencies
-        ContentUri: src/layers/aws-integration
+        ContentUri: src/layers/
         CompatibleRuntimes:
           - nodejs12.x
         RetentionPolicy: Retain            
