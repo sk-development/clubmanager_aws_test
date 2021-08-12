@@ -1,31 +1,36 @@
 const https = require('https');
 
 exports.handler = async (event) => {
-    // await doPostRequest(event)
-    //     .then(result => {
-    //         if (result.valid == true) {
-    //             return allowPolicy(event.methodArn);
-    //         } else {
-    //             denyAllPolicy();
-    //         }
+    // // await doPostRequest(event)
+    // //     .then(result => {
+    // //         if (result.valid == true) {
+    // //             return allowPolicy(event.methodArn);
+    // //         } else {
+    // //             denyAllPolicy();
+    // //         }
+    // //     }
+    // //     )
+    // //     .catch(err);
+    //     var isValidUser = await doPostRequest(event);
+    //     if (isValidUser.result.valid) {
+    //         return allowPolicy(event.methodArn);
+    //     } else {
+    //         denyAllPolicy();
     //     }
-    //     )
-    //     .catch(err);
-        var isValidUser = await doPostRequest(event);
-        if (isValidUser.result.valid) {
-            return allowPolicy(event.methodArn);
-        } else {
-            denyAllPolicy();
-        }
-        // switch to just async/await!?!
-        // result in variable
-        // check var and do stuff
+    //     // switch to just async/await!?!
+    //     // result in variable
+    //     // check var and do stuff
 
 
-    // if (event.authorizationToken === "12345")
+    // // if (event.authorizationToken === "12345")
+    // //     return allowPolicy(event.methodArn);
+
+    // // return denyAllPolicy();
+
+        // if(event.authorizationToken === "12345")
     //     return allowPolicy(event.methodArn);
-
-    // return denyAllPolicy();
+        
+    return allowPolicy(event.methodArn);
 };
 
 function denyAllPolicy() {
@@ -52,7 +57,7 @@ function allowPolicy(methodArn) {
                 {
                     "Action": "execute-api:Invoke",
                     "Effect": "Allow",
-                    "Resource": methodArn
+                    "Resource": "*"
                 }
             ]
         }
