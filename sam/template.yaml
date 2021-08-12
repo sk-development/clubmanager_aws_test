@@ -10,6 +10,9 @@ Parameters:
     Type: String
   AuthToken:
     Type: String
+Outputs:
+  SurveysAPIUrl:
+    Value: !Sub "https://${SurveysAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
 Globals:
   Api:
     Cors:
@@ -41,6 +44,7 @@ Resources:
         Type: REGIONAL
       Auth:
         DefaultAuthorizer: LambdaAuthorizer
+        AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           LambdaAuthorizer:
             FunctionArn: !GetAtt LambdaAuthorizer.Arn
