@@ -48,6 +48,9 @@ Resources:
         Authorizers:
           LambdaAuthorizer:
             FunctionArn: !GetAtt LambdaAuthorizer.Arn
+          Identity:
+            Header: x-apikey
+            ReauthorizeEvery: 0
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
