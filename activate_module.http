@@ -1,0 +1,9 @@
+
+### Use this call to verify the REST Api is working as expected
+
+POST https://clubmanager-test2.sk-webapps.de/api/tenant-module HTTP/1.1
+x-apikey: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2Mjg4NDUwNDMsImp0aSI6InlwZE4rQld2RzQxZWd0RjhZaHI3N1E9PSIsImRhdGEiOnsidXNlcklkIjoxLCJ1c2VyTmFtZSI6InN5c3RlbS5hZG1pbiJ9fQ.6ukNALfLOCUJWW7WMy0pVOLrQBJ_kTRxXwY4FJXlhhn0OgM0h8-mA4oUZCjlQCJJp0XO27QxLHJaKykmPR0A5g
+Content-Type: application/x-www-form-urlencoded
+
+modulename=survey
+&tenantid=1

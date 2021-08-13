@@ -1,0 +1,11 @@
+
+### Use this call to verify the REST Api is working as expected
+
+POST https://clubmanager-test2.sk-webapps.de/api/verify-authentication HTTP/1.1
+x-accesstoken: 366EB3BD45CE5CE769F0B8BFD3472A482B07EC1F32E56ADA1625B8A7FB324B66
+content-type: application/json
+
+{
+    "apikey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2Mjg4MDE5ODAsImp0aSI6InZ6Y2Q0UWVySkw5QjZTUFl5M2xMb0E9PSIsImRhdGEiOnsidXNlcklkIjoyLCJ1c2VyTmFtZSI6Im1laW4udmVyZWluLmFkbWluIn19.hpXFHhoXgcniXC0Y5Nf4jgJ6eGdkq8OozFeXPoEb2T0y6Ambx7M1sEl8FiD0aMsrunznC4H1j4XzliD9qWftLw"
+}
+
