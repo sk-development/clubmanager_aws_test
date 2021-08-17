@@ -118,28 +118,28 @@ async function createParticipation(event) {
     const data = JSON.parse(event.body);
     // await checkUserId(event, data.userId)
     //     .then(result => {
-            if (result.valid == true) {
-                var params = {
-                    TableName: process.env.TABLE_NAME,
-                    Item: marshall({
-                        participationId: id,
-                        userId: data.userId,
-                        surveyId: data.surveyId,
-                        notation: data.notation,
-                        editedOptionsIds: data.editedOptionsObjectArray
-                    }),
-                    ReturnConsumedCapacity: 'TOTAL',
-                };
-                var result;
-                try {
-                    result = await dynamoDb.putItem(params).promise();
-                    result = 'Success';
-                } catch (err) {
-                    result = err;
-                }
-            } else {
-                return result;
-            }
+    // if (result.valid == true) {
+    var params = {
+        TableName: process.env.TABLE_NAME,
+        Item: marshall({
+            participationId: id,
+            userId: data.userId,
+            surveyId: data.surveyId,
+            notation: data.notation,
+            editedOptionsIds: data.editedOptionsObjectArray
+        }),
+        ReturnConsumedCapacity: 'TOTAL',
+    };
+    var result;
+    try {
+        result = await dynamoDb.putItem(params).promise();
+        result = 'Success';
+    } catch (err) {
+        result = err;
+    }
+            // } else {
+            //     return result;
+            // }
         // }
         // )
         // .catch(err);
