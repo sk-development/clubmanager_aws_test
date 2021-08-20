@@ -1,6 +1,6 @@
 const https = require('https');
 
-exports.handler = async (event) => {
+exports.handler = (event) => {
     // // await doPostRequest(event)
     // //     .then(result => {
     // //         if (result.valid == true) {
@@ -29,8 +29,20 @@ exports.handler = async (event) => {
 
         // if(event.authorizationToken === "12345")
     //     return allowPolicy(event.methodArn);
-        
-    return allowPolicy(event.methodArn);
+    console.log("Anfrage noch nicht gestartet!");
+    doPostRequest(event)
+        .then((result) => {
+            console.log(result.data);
+            console.log("Anfrage erfolgreich!");
+                if (result.valid == true) {
+                    return allowPolicy(event.methodArn);
+                } else {
+                    return denyAllPolicy();
+                }
+        })
+        .catch((errorMessage) => {
+            console.log(errorMessage);
+        })
 };
 
 function denyAllPolicy() {
@@ -68,34 +80,38 @@ function doPostRequest(event) {
         const key = event["headers"]["x-apikey"];
         // how to access the x-apikey from the event!?
         // const key = event["headers"]["apikey"];
-        // const key = event.apikey; 
+        // const key = event.apikey;
         const options = {
-            host: `${process.env.host}`, //set to env variable
+            host: process.env.HOST, //set to env variable
             path: '/api/verify-authentication',
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'x-accesstoken': `${process.env.xaccesstoken}` //set to env variable
+                'x-accesstoken': process.env.XACCESSTOKEN //set to env variable
             },
             body: {
-                'apikey': `${key}`
+                'apikey': key
             }
         };
-
+        let body = [];
         //create the request object with the callback with the result
         const req = https.request(options, (res) => {
-            resolve(JSON.stringify(res));
+            console.log(res);
+            console.log("Bin zumindest mal hier123");
+            resolve(res);
         });
-
         // handle the possible errors
         req.on('error', (e) => {
             reject(e.message);
-        });
-
-        //do the request
-        req.write(JSON.stringify(data));
-
+        }).on('data', (data) => {
+            body.push(data)
+            console.log(data);
+        })
+        // //do the request
+        // req.write(JSON.stringify(data));
+        console.log("Bin zumindest mal hier1");
         //finish the request
         req.end();
+        console.log("Bin zumindest mal hier2");
     });
 };

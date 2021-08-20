@@ -1,6 +1,28 @@
 {
     "configurations": [
-
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "sam:LambdaAuthorizer",
+            "invokeTarget": {
+                "target": "template",
+                "templatePath": "${workspaceFolder}/sam/template.yaml",
+                "logicalId": "LambdaAuthorizer"
+            },
+            "lambda": {
+                "payload": {
+                    "json": {
+                        "headers": {
+                            "x-apikey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MjkxOTM3MDQsImp0aSI6InMwYzRIY3lZUXRpNWFOVmdlY2ZDcEE9PSIsImRhdGEiOnsidXNlcklkIjoxNjUsInVzZXJOYW1lIjoiaW5lcy5hYnQifX0.YT67cowiD7d2OwdYStV6mq1cyRVpqO50CMZMbTb1-tOgEVB2KtpjU8AEIZP6QKs-j6p7_0gltXWtMryolTFVrA"
+                        }
+                    }
+                },
+                "environmentVariables": {
+                    "HOST": "clubmanager-test2.sk-webapps.de",
+                    "XACCESSTOKEN": "366EB3BD45CE5CE769F0B8BFD3472A482B07EC1F32E56ADA1625B8A7FB324B66"
+                }
+            }
+        },
         {
             "type": "node",
             "request": "attach",
@@ -11,10 +33,7 @@
             "remoteRoot": "/var/task",
             "protocol": "inspector",
             "stopOnEntry": false
-          },
-
-  
-
+        },
         {
             "type": "aws-sam",
             "request": "direct-invoke",
@@ -39,7 +58,7 @@
                 "payload": {
                     "json": {}
                 }
-            },
+            }
         },
         {
             "type": "aws-sam",
@@ -61,15 +80,42 @@
             },
             "api": {
                 "path": "/surveys",
-                "httpMethod": "put",
+                "httpMethod": "post",
                 "payload": {
                     "json": {
-                        "id": {"N": "5"},
-                        "name": {"S": "First Input survey"},
-                        "options": { "L": [ { "M" : { "index" : { "N" : "0" }, "text" : { "S" : "option1" } } }, { "M" : { "index" : { "N" : "1" }, "text" : { "S" : "option2" } } } ] }                    
+                        "id": {
+                            "N": "5"
+                        },
+                        "name": {
+                            "S": "First Input survey"
+                        },
+                        "options": {
+                            "L": [
+                                {
+                                    "M": {
+                                        "index": {
+                                            "N": "0"
+                                        },
+                                        "text": {
+                                            "S": "option1"
+                                        }
+                                    }
+                                },
+                                {
+                                    "M": {
+                                        "index": {
+                                            "N": "1"
+                                        },
+                                        "text": {
+                                            "S": "option2"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
                     }
                 }
-            },
+            }
         },
         {
             "type": "aws-sam",
@@ -95,29 +141,39 @@
                 "payload": {
                     "json": {}
                 }
-            },
-        },
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to SAM CLI updateSurvey",
-            "address": "localhost",
-            "port": 5858,
-            "localRoot": "${workspaceRoot}/sam/src/lambda_update_survey",
-            "remoteRoot": "/var/task",
-            "protocol": "inspector",
-            "stopOnEntry": false
-            },
-            {
-                "type": "node",
-                "request": "attach",
-                "name": "Attach to SAM CLI deleteSurvey",
-                "address": "localhost",
-                "port": 5858,
-                "localRoot": "${workspaceRoot}/sam/src/lambda_delete_survey",
-                "remoteRoot": "/var/task",
-                "protocol": "inspector",
-                "stopOnEntry": false
-                },
+            }
+        }
+        // },
+        // {
+        //     "type": "aws-sam",
+        //     "request": "direct-invoke",
+        //     "name": "API sam:LambdaAuthorizer",
+        //     "sam": {
+        //         "dockerNetwork": "localstack_default"
+        //     },
+        //     "invokeTarget": {
+        //         "target": "api",
+        //         "templatePath": "sam/template.yaml",
+        //         "logicalId": "LambdaAuthorizer"
+        //     },
+        //     "lambda": {
+        //         "environmentVariables": {
+        //             "LOCAL_ENDPOINT": "https://clubmanager-test2.sk-webapps.de/api",
+        //             "HOST": "https://clubmanager-test2.sk-webapps.de/api",
+        //             "XACCESSTOKEN": "366EB3BD45CE5CE769F0B8BFD3472A482B07EC1F32E56ADA1625B8A7FB324B66"
+        //         }
+        //     },
+        //     "api": {
+        //         "path": "/verify-authentication",
+        //         "httpMethod": "post",
+        //         "payload": {
+        //             "json": {
+        //                 "headers": {
+        //                     "x-apikey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MjkxOTM3MDQsImp0aSI6InMwYzRIY3lZUXRpNWFOVmdlY2ZDcEE9PSIsImRhdGEiOnsidXNlcklkIjoxNjUsInVzZXJOYW1lIjoiaW5lcy5hYnQifX0.YT67cowiD7d2OwdYStV6mq1cyRVpqO50CMZMbTb1-tOgEVB2KtpjU8AEIZP6QKs-j6p7_0gltXWtMryolTFVrA"
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
     ]
 }
