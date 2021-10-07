@@ -1,5 +1,5 @@
 const https = require('https');
-
+const superagent = require('superagent');
 exports.handler = (event) => {
     // // await doPostRequest(event)
     // //     .then(result => {
@@ -32,7 +32,6 @@ exports.handler = (event) => {
     console.log("Anfrage noch nicht gestartet!");
     doPostRequest(event)
         .then((result) => {
-            console.log(result.data);
             console.log("Anfrage erfolgreich!");
                 if (result.valid == true) {
                     return allowPolicy(event.methodArn);
@@ -75,43 +74,64 @@ function allowPolicy(methodArn) {
         }
     }
 }
+
 function doPostRequest(event) {
     return new Promise((resolve, reject) => {
         const key = event["headers"]["x-apikey"];
-        // how to access the x-apikey from the event!?
-        // const key = event["headers"]["apikey"];
-        // const key = event.apikey;
-        const options = {
-            host: process.env.HOST, //set to env variable
-            path: '/api/verify-authentication',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'x-accesstoken': process.env.XACCESSTOKEN //set to env variable
-            },
-            body: {
-                'apikey': key
-            }
-        };
-        let body = [];
-        //create the request object with the callback with the result
-        const req = https.request(options, (res) => {
-            console.log(res);
-            console.log("Bin zumindest mal hier123");
-            resolve(res);
-        });
-        // handle the possible errors
-        req.on('error', (e) => {
-            reject(e.message);
-        }).on('data', (data) => {
-            body.push(data)
-            console.log(data);
-        })
-        // //do the request
-        // req.write(JSON.stringify(data));
+        superagent
+            .post('https://' + process.env.HOST + '/api/verify-authentication')
+            .set('Content-Type', 'application/json')
+            .set('x-accesstoken', process.env.XACCESSTOKEN)
+            .send({'apikey': key})
+            .then((res) => {
+                const test = res.body
+                resolve(res.body);
+            })
+            .catch((err) => {
+                reject(err.status);
+            });
         console.log("Bin zumindest mal hier1");
-        //finish the request
-        req.end();
         console.log("Bin zumindest mal hier2");
-    });
-};
+    })
+}
+
+// function doPostRequest(event) {
+//     return new Promise((resolve, reject) => {
+//         const key = event["headers"]["x-apikey"];
+//         // how to access the x-apikey from the event!?
+//         // const key = event["headers"]["apikey"];
+//         // const key = event.apikey;
+//         const options = {
+//             host: process.env.HOST, //set to env variable
+//             path: '/api/verify-authentication',
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'x-accesstoken': process.env.XACCESSTOKEN //set to env variable
+//             },
+//             body: {
+//                 'apikey': key
+//             }
+//         };
+//         //create the request object with the callback with the result
+//         const req = https.request(options, (res) => {
+//             var body = '';
+//             res.on('data', function(chunk) {
+//                 body += chunk;
+//               });
+//             res.on('end', function() {
+//                 resolve(body);
+//             });
+//         });
+//         // handle the possible errors
+//         req.on('error', (e) => {
+//             reject(e.message);
+//         });
+//         // //do the request
+//         // req.write(JSON.stringify(data));
+//         console.log("Bin zumindest mal hier1");
+//         //finish the request
+//         req.end();
+//         console.log("Bin zumindest mal hier2");
+//     });
+// };
