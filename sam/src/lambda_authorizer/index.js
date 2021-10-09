@@ -33,16 +33,38 @@ exports.handler = (event) => {
     doPostRequest(event)
         .then((result) => {
             console.log("Anfrage erfolgreich!");
-                if (result.valid == true) {
-                    return allowPolicy(event.methodArn);
-                } else {
+                if (result.valid == false) {
+                    console.log("Ergebnis invalid!");
                     return denyAllPolicy();
+                } else {
+                    if (result.privileges.tenantPrivileges[0].privileges == 'admin') {
+                        console.log("Ist globaler Admin!");
+                        return allowPolicy(true, 'globalAdmin');
+                    } else {
+                        const modulePrivileges = getRequestedModulePrivileges(event["headers"]["Module-Type"], result.privileges.tenantModulePrivileges);
+                        console.log(modulePrivileges);
+                        if (modulePrivileges != 'none') {
+                            console.log("Ist ein einfacher Nutzer!");
+                            return allowPolicy(false, modulePrivileges);
+                        }
+                        console.log("Deny!");
+                        return denyAllPolicy();
+                    }
                 }
         })
         .catch((errorMessage) => {
             console.log(errorMessage);
         })
 };
+
+function getRequestedModulePrivileges(moduleType, tenantModulePrivileges) {
+    for (const privilege of tenantModulePrivileges) {
+        if (privilege.module === moduleType) {
+            return privilege.privileges;
+        }
+    }
+    // return 'none';
+}
 
 function denyAllPolicy() {
     return {
@@ -59,7 +81,7 @@ function denyAllPolicy() {
         }
     }
 }
-function allowPolicy(methodArn) {
+function allowPolicy(isGlobalAdmin, modulePrivileges) {
     return {
         "principalId": "apigateway.amazonaws.com",
         "policyDocument": {
@@ -71,6 +93,10 @@ function allowPolicy(methodArn) {
                     "Resource": "*"
                 }
             ]
+        },
+        "context": {
+            "isGlobalAdmin": isGlobalAdmin,
+            "modulePrivileges": modulePrivileges
         }
     }
 }
