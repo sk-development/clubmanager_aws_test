@@ -133,7 +133,7 @@ async function createParticipation(event) {
     var result;
     try {
         result = await dynamoDb.putItem(params).promise();
-        result = 'Success';
+        result = id;
     } catch (err) {
         result = err;
     }
