@@ -10,7 +10,7 @@ exports.handler = async (event) => {
                     console.log("is global admin!");
                     return allowPolicy(true, 'globalAdmin');
                 } else {
-                    const modulePrivileges = getRequestedModulePrivileges(event["headers"]["Module-Type"], result.privileges.tenantModulePrivileges);
+                    const modulePrivileges = getRequestedModulePrivileges(event.headers['module-type'], result.privileges.tenantModulePrivileges);
                     console.log(modulePrivileges);
                     if (modulePrivileges != null) {
                         console.log("is normale user!");
@@ -22,6 +22,7 @@ exports.handler = async (event) => {
             }
         })
         .catch((errorMessage) => {
+            console.log('error:')
             console.log(errorMessage);
         })
 };
@@ -72,7 +73,9 @@ function allowPolicy(isGlobalAdmin, modulePrivileges) {
 
 function doPostRequest(event) {
     return new Promise((resolve, reject) => {
-        const key = event.authorizationToken;
+        // const key = event.authorizationToken;
+        // const key = event.headers.authorizationToken;
+        const key = event.headers['x-apikey'];
         superagent
             .post(process.env.HOST + 'api/verify-authentication')
             .set('Content-Type', 'application/json')
@@ -83,7 +86,7 @@ function doPostRequest(event) {
                 resolve(res.body);
             })
             .catch((err) => {
-                reject(err.status);
+                reject(err);
             });
     })
 }
