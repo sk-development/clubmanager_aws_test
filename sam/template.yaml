@@ -87,9 +87,12 @@ Resources:
         AddDefaultAuthorizerToCorsPreflight: false
         Authorizers:
           LambdaAuthorizer:
+            FunctionPayloadType: REQUEST
             FunctionArn: !GetAtt LambdaAuthorizer.Arn
             Identity:
-              Header: x-apikey
+              Header:
+                - x-apikey
+                - Module-Type
               ReauthorizeEvery: 0
   CommonLayer:
     Type: AWS::Serverless::LayerVersion
