@@ -5,10 +5,17 @@ exports.handler = async (event) => {
 };
 
 async function businessLogic(event) {
-    var data = await cloudIntegration.PARTICIPATION_REPOSITORY.createParticipation(event)
-    return {
-        executionSuccessful: true,
-        data
-    }
+    if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
+        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.createParticipation(event)
+        return {
+            executionSuccessful: true,
+            data
+        }
+    } else {
+        return {
+            executionSuccessful: false,
+            errorMessage: 'No priviliges for requested action!'
+        }
+    } 
 }
 

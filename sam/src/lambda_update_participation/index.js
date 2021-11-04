@@ -5,10 +5,25 @@ exports.handler = async (event) => {
 };
 
 async function businessLogic(event) {
-    var data = await cloudIntegration.PARTICIPATION_REPOSITORY.updateParticipation(event);
+    if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
+        const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i;
+        var participationId = event['pathParameters']['participationID'];
+        if (uuidV4Regex.test(participationId)) {
+            var data = await cloudIntegration.PARTICIPATION_REPOSITORY.updateParticipation(event);
+        } else {
+            return {
+                executionSuccessful: false,
+                errorMessage: 'ParticipationID invalid!'
+            }
+        }
+        return {
+            executionSuccessful: true,
+            data
+        }
+    }
     return {
-        executionSuccessful: true,
-        data
+        executionSuccessful: false,
+        errorMessage: 'No priviliges for requested action!'
     }
 }
 

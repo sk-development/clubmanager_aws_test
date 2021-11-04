@@ -5,9 +5,7 @@ exports.handler = async (event) => {
 };
 
 async function businessLogic(event) {
-    const globalAdmin = event.requestContext.authorizer.isGlobalAdmin;
-    const modulePrivileges = event.requestContext.authorizer.modulePrivileges;
-    if (globalAdmin == 'true' || modulePrivileges == 'admin') {
+    if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
         var data = await cloudIntegration.SURVEY_REPOSITORY.createSurvey(event);
         return {
             executionSuccessful: true,
@@ -16,7 +14,7 @@ async function businessLogic(event) {
     } else {
         return {
             executionSuccessful: false,
-            data
+            errorMessage: 'No priviliges for requested action!'
         }
     }
 }

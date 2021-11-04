@@ -1,3 +1,6 @@
+var modulePrivilegesHelper = require('./module_privileges_helper');
+var localAuthorizerHelper = require('./local_authorizer_helper');
+
 function handle(businessLogicCallback, event) {
     try {
         var result = businessLogicCallback(event);
@@ -13,6 +16,10 @@ function handle(businessLogicCallback, event) {
 }
 
 async function handleAsync(businessLogicCallback, event) {
+    // if(process.env.AWS_SAM_LOCAL) {
+    //     localAuthorizerHelper.invokeAuthorizerLocal()
+    // }
+    modulePrivilegesHelper.processModulePrivileges(event)
     var handledResult;
     try {
         var result = await businessLogicCallback(event);
