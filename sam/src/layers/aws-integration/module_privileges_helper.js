@@ -25,7 +25,7 @@ function isAdmin() {
 }
 
 module.exports = {
-    checkModulePrivileges: processModulePrivileges,
+    processModulePrivileges: processModulePrivileges,
     isUser: isUser,
     isAdmin: isAdmin
 };
