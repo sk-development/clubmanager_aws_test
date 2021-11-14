@@ -1,4 +1,5 @@
-var modulePrivilegesHelper = require('./module_privileges_helper');
+/* @NIKLAS: Do we need to import this module here? */
+// var modulePrivilegesHelper = require('./module_privileges_helper');
 var localAuthorizerHelper = require('./local_authorizer_helper');
 
 function handle(businessLogicCallback, event) {
@@ -16,19 +17,90 @@ function handle(businessLogicCallback, event) {
 }
 
 async function handleAsync(businessLogicCallback, event) {
-    // if(process.env.AWS_SAM_LOCAL) {
-    //     localAuthorizerHelper.invokeAuthorizerLocal()
+    /* old version */
+    // var handledResult;
+    // try {
+    //     var result = await businessLogicCallback(event);
+    //     handledResult = handleResult(result);
     // }
-    modulePrivilegesHelper.processModulePrivileges(event)
+    // catch (err) {
+    //     handledResult = {
+    //         statusCode: 500,
+    //         data: err
+    //     }
+    // }
+    // return packageHttpResponse(handledResult);
+
+    /* @NIKLAS: Do we need this module here? */
+    // modulePrivilegesHelper.processModulePrivileges(event)
+
+    /* new version */
     var handledResult;
-    try {
-        var result = await businessLogicCallback(event);
-        handledResult = handleResult(result);
+    if (process.env.AWS_SAM_LOCAL) {
+        /* @NIKLAS: Please complete the call to the localAuthorizerHelper module */
+        var localAuthorizerResult = localAuthorizerHelper;
+        // Create event object with privileges in context
+        // TODO: Replace customEvent properties with values from localAuthorizerResult variable, e.g. localAuthorizerResult.body, ...
+        const customEvent =
+        {
+            body: event.body,
+            headers: event.headers,
+            httpMethod: event.httpMethod,
+            isBase64Encoded: event.isBase64Encoded,
+            multiValueHeaders: event.multiValueHeaders,
+            multiValueQueryStringParameters: event.multiValueQueryStringParameters,
+            path: event.path,
+            pathParameters: event.pathParameters,
+            queryStringParameters: event.queryStringParameters,
+            requestContext: {
+                accountId: event.requestContext.accountId,
+                apiId: event.requestContext.apiId,
+                domainName: event.requestContext.domainName,
+                extendedRequestId: event.requestContext.extendedRequestId,
+                httpMethod: event.requestContext.httpMethod,
+                identity: event.requestContext.identity,
+                path: event.requestContext.path,
+                protocol: event.requestContext.protocol,
+                requestId: event.requestContext.requestId,
+                requestTime: event.requestContext.requestTime,
+                requestTimeEpoch: event.requestContext.requestTimeEpoch,
+                resourceId: event.requestContext.resourceId,
+                resourcePath: event.requestContext.resourcePath,
+                stage: event.requestContext.stage,
+                authorizer: {
+                    isGlobalAdmin: data.context.isGlobalAdmin,
+                    modulePrivileges: data.context.modulePrivileges
+                }
+            },
+            resource: event.resource,
+            stageVariables: event.stageVariables,
+            version: event.version
+        }
+        try {
+            var result = await businessLogicCallback(customEvent);
+            handledResult = handleResult(result);
+            // businessLogicCallback(customEvent).then((result) => {
+            //     console.log(result)
+            //     handledResult = handleResult(result);
+            // })
+        }
+        catch (err) {
+            handledResult = {
+                statusCode: 500,
+                data: err
+            }
+        }
     }
-    catch (err) {
-        handledResult = {
-            statusCode: 500,
-            data: err
+    else {
+        try {
+            var result = await businessLogicCallback(event);
+            handledResult = handleResult(result);
+        }
+        catch (err) {
+            handledResult = {
+                statusCode: 500,
+                data: err
+            }
         }
     }
     return packageHttpResponse(handledResult);

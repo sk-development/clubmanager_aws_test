@@ -13,13 +13,13 @@
                 "payload": {
                     "json": {
                         "headers": {
-                            "x-apikey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MzM3ODY2NzAsImp0aSI6IklubU85amlmWVFNd0Z4U05wRlg4a0E9PSIsImRhdGEiOnsidXNlcklkIjoxNjUsInVzZXJOYW1lIjoiaW5lcy5hYnQifX0.YBqSyjQPLyaFacoki4pUA6NNi8tnt86QwRvHPJWSphNGdjV540Xt4XhT3yRpKB1679XMbJa1e9vUVwMxtxqbrA",
+                            "x-apikey": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJpYXQiOjE2MzU0NTU1MTAsImp0aSI6IkRSZ2J6WkRuK0JsYmxBclwvcnR3MEd3PT0iLCJkYXRhIjp7InVzZXJJZCI6MjQwLCJ1c2VyTmFtZSI6Im1hdHRoaWFzLmFhY2hlbiJ9fQ.66EnW5BvQGwCvO9-RFz0f3cKWTC8vaJRwDz1uhLAsIvJQTS2mwdsJtavcFhEiBr_XrSrQLrRbsQMjwGSfXnrww",
                             "Module-Type": "survey"
                         }
                     }
                 },
                 "environmentVariables": {
-                    "HOST": "clubmanager-test2.sk-webapps.de",
+                    "HOST": "https://clubmanager-test1.sk-webapps.de/",
                     "XACCESSTOKEN": "366EB3BD45CE5CE769F0B8BFD3472A482B07EC1F32E56ADA1625B8A7FB324B66"
                 }
             }
@@ -57,7 +57,13 @@
                 "path": "/surveys",
                 "httpMethod": "get",
                 "payload": {
-                    "json": {}
+                    "json": {
+                        "tenantId": 1,
+                        "tenantUuid": "d938gi_test1",
+                        "module": "survey",
+                        "privileges": "admin",
+                        "id": 624
+                    }
                 }
             }
         },
@@ -84,36 +90,17 @@
                 "httpMethod": "post",
                 "payload": {
                     "json": {
-                        "id": {
-                            "N": "5"
-                        },
-                        "name": {
-                            "S": "First Input survey"
-                        },
-                        "options": {
-                            "L": [
-                                {
-                                    "M": {
-                                        "index": {
-                                            "N": "0"
-                                        },
-                                        "text": {
-                                            "S": "option1"
-                                        }
-                                    }
-                                },
-                                {
-                                    "M": {
-                                        "index": {
-                                            "N": "1"
-                                        },
-                                        "text": {
-                                            "S": "option2"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
+                        "title": "Fifth Input survey",
+                        "validTo": "02.02.2021",
+                        "description": "Test Test",
+                        "options": [
+                            {
+                                "text": "option1"
+                            },
+                            {
+                                "text": "option2"
+                            }
+                        ]
                     }
                 }
             }
