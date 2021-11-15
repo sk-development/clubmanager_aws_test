@@ -1,5 +1,4 @@
-/* @NIKLAS: Do we need to import this module here? */
-// var modulePrivilegesHelper = require('./module_privileges_helper');
+var modulePrivilegesHelper = require('./module_privileges_helper');
 var localAuthorizerHelper = require('./local_authorizer_helper');
 
 function handle(businessLogicCallback, event) {
@@ -31,16 +30,11 @@ async function handleAsync(businessLogicCallback, event) {
     // }
     // return packageHttpResponse(handledResult);
 
-    /* @NIKLAS: Do we need this module here? */
-    // modulePrivilegesHelper.processModulePrivileges(event)
 
     /* new version */
     var handledResult;
     if (process.env.AWS_SAM_LOCAL) {
-        /* @NIKLAS: Please complete the call to the localAuthorizerHelper module */
-        var localAuthorizerResult = localAuthorizerHelper;
-        // Create event object with privileges in context
-        // TODO: Replace customEvent properties with values from localAuthorizerResult variable, e.g. localAuthorizerResult.body, ...
+        var localAuthorizerResult = await localAuthorizerHelper.localAuthorizer(event);
         const customEvent =
         {
             body: event.body,
@@ -68,21 +62,18 @@ async function handleAsync(businessLogicCallback, event) {
                 resourcePath: event.requestContext.resourcePath,
                 stage: event.requestContext.stage,
                 authorizer: {
-                    isGlobalAdmin: data.context.isGlobalAdmin,
-                    modulePrivileges: data.context.modulePrivileges
+                    isGlobalAdmin: localAuthorizerResult.context.isGlobalAdmin,
+                    modulePrivileges: localAuthorizerResult.context.modulePrivileges
                 }
             },
             resource: event.resource,
             stageVariables: event.stageVariables,
             version: event.version
         }
+        modulePrivilegesHelper.processModulePrivileges(customEvent)
         try {
             var result = await businessLogicCallback(customEvent);
             handledResult = handleResult(result);
-            // businessLogicCallback(customEvent).then((result) => {
-            //     console.log(result)
-            //     handledResult = handleResult(result);
-            // })
         }
         catch (err) {
             handledResult = {

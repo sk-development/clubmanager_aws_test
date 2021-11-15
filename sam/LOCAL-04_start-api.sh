@@ -7,8 +7,8 @@ sam local start-api \
     --parameter-overrides LambdaExecutionRole=$LAMBDA_EXECUTION_ROLE \
                       AuthHost=$AUTH_HOST \
                       AuthToken=$AUTH_TOKEN \
-    --parameter-overrides LocalEndpoint=$LOCAL_ENDPOINT \
-   --warm-containers LAZY
+                      LocalEndpoint=$LOCAL_ENDPOINT \
+   --warm-containers LAZY 
 
     # --warm-containers EAGER
 

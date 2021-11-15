@@ -4,7 +4,7 @@ var admin;
 function processModulePrivileges(event) {
     const globalAdmin = event.requestContext.authorizer.isGlobalAdmin;
     const modulePrivileges = event.requestContext.authorizer.modulePrivileges;
-    if(globalAdmin == 'true' || modulePrivileges.includes('admin')) {
+    if(globalAdmin == 'true' || modulePrivileges.includes('admin') || modulePrivileges.includes('globalAdmin')) {
         admin = true
         user = true
     } else if (modulePrivileges.includes('user')) {
