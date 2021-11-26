@@ -32,9 +32,9 @@ function getIndividualPathParameter(event, pathParameter) {
     }
 }
 
- function checkUuid(surveyId){
+ function checkUuid(id){
     const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i; // in handler function, define globally
-    if(uuidV4Regex.test(surveyId)){
+    if(uuidV4Regex.test(id) == true || id == null){
         return true;
     } else {
         return false;

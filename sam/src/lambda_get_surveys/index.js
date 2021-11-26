@@ -18,7 +18,7 @@ function prepareInput(event) {
     var surveyData = cloudIntegration.EVENT_HELPER.getSurveyData(event);
     var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID')
     if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter)) {
-        return new InputObject(surveyData, null, null, surveyIDPathParameter, null);
+        return new InputObject(surveyData, null, surveyIDPathParameter, null);
     } else {
         return {
             executionSuccessful: false,
