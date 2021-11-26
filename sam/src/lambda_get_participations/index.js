@@ -4,10 +4,14 @@ var cloudIntegration = require(process.env.AWS ? '/opt/aws-integration/index' : 
 
 exports.handler = async (event) => {
     // event mit einer separaten Methode im Adapter auspacken
-    return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(businessLogic, event);
+    return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(prepareInput, businessLogic, event);
 };
 
-async function businessLogic(event) {
+function prepareInput(event){
+    // return js object (path parameter, survey/participatin, userId, surveyId als properties udn darauf aufbauend in der businessLogic die Abfrage für die unterschiedlichen Aufrufe machen...) for businessLogic function
+}
+
+async function businessLogic(event) { //insert prepareInput object instead of event
     if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
         if (!event['pathParameters']) {
             if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {

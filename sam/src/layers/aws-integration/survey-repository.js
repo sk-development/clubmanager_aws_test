@@ -48,12 +48,13 @@ async function getSurvey(surveyId) {
     return retData;
 }
 
-async function updateSurvey(event) {
-    const data = JSON.parse(event.body)
+async function updateSurvey(surveyId, data) {
+    // const data = JSON.parse(event.body)
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            id: event['pathParameters']['surveyID']
+            // id: event['pathParameters']['surveyID']
+            id: surveyId
         }),
         UpdateExpression: "set title = :t, validTo=:v, description=:d, options=:o",
         ExpressionAttributeValues: marshall({

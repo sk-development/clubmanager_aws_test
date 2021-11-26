@@ -15,7 +15,7 @@ function handle(businessLogicCallback, event) {
     return packageHttpResponse(handledResult);
 }
 
-async function handleAsync(businessLogicCallback, event) {
+async function handleAsync(prepareInputCallback, businessLogicCallback, event) {
     /* old version */
     // var handledResult;
     // try {
@@ -30,6 +30,8 @@ async function handleAsync(businessLogicCallback, event) {
     // }
     // return packageHttpResponse(handledResult);
 
+    //prepareInputCallback - put result into businessLogic
+    var preparedInput = prepareInputCallback(event);
 
     /* new version */
     var handledResult;
@@ -72,7 +74,8 @@ async function handleAsync(businessLogicCallback, event) {
         }
         modulePrivilegesHelper.processModulePrivileges(customEvent)
         try {
-            var result = await businessLogicCallback(customEvent);
+            // var result = await businessLogicCallback(customEvent);
+            var result = await businessLogicCallback(preparedInput);
             handledResult = handleResult(result);
         }
         catch (err) {
