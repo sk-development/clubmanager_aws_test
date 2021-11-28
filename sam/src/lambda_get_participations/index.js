@@ -17,17 +17,21 @@ class InputObject {
 }
 
 function prepareInput(event) {
-    var participationData = cloudIntegration.EVENT_HELPER.getParticipationData(event);
-    var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID');
     var userIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'userID');
-    var participationIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'participationID');
-    if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter) && cloudIntegration.EVENT_HELPER.checkUuid(userIDPathParameter && cloudIntegration.EVENT_HELPER.checkUuid(participationIDPathParameter))) {
-        return new InputObject(participationData, userIDPathParameter, surveyIDPathParameter, participationIDPathParameter);
-    } else {
-        return {
-            executionSuccessful: false,
-            errorMessage: 'Input ID invalid'
+    if (event.body != null) {
+        var participationIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'participationID');
+        var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID');
+        var participationData = cloudIntegration.EVENT_HELPER.getParticipationData(event);
+        if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter) && cloudIntegration.EVENT_HELPER.checkUuid(userIDPathParameter && cloudIntegration.EVENT_HELPER.checkUuid(participationIDPathParameter))) {
+            return new InputObject(participationData, userIDPathParameter, surveyIDPathParameter, participationIDPathParameter);
+        } else {
+            return {
+                executionSuccessful: false,
+                errorMessage: 'Input ID invalid'
+            }
         }
+    } else {
+        return new InputObject(null, userIDPathParameter, null, null);
     }
 }
 
@@ -105,7 +109,7 @@ function prepareInput(event) {
 //new version
 async function businessLogic(inputObject) { //insert prepareInput object instead of event
     if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
-        if (inputObject.userID == null && inputObject.surveyID == null && inputObject.participationID == null) {
+        if (inputObject.userID != null && inputObject.surveyID == null && inputObject.participationID == null) {
             if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
                 var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getAllParticipations();
             } else {

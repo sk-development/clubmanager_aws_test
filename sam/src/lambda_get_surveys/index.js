@@ -15,10 +15,30 @@ class InputObject {
 }
 
 function prepareInput(event) {
+    // old version
+    // var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID')
+    // if (event.body != null) {
+    //     var surveyData = cloudIntegration.EVENT_HELPER.getSurveyData(event);
+    //     if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter)) {
+    //         return new InputObject(surveyData, null, surveyIDPathParameter, null);
+    //     } else {
+    //         return {
+    //             executionSuccessful: false,
+    //             errorMessage: 'SurveyID invalid'
+    //         }
+    //     }
+    // } else {
+    //     return new InputObject(null, null, surveyIDPathParameter, null);
+    // }
+    // new version
+    var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID');
     var surveyData = cloudIntegration.EVENT_HELPER.getSurveyData(event);
-    var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID')
     if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter)) {
-        return new InputObject(surveyData, null, surveyIDPathParameter, null);
+        if (surveyData == null) {
+            return new InputObject(null, null, surveyIDPathParameter, null);
+        } else {
+            return new InputObject(surveyData, null, surveyIDPathParameter, null);
+        }
     } else {
         return {
             executionSuccessful: false,
@@ -62,7 +82,7 @@ async function businessLogic(inputObject) {
         if (inputObject.surveyID == null) {
             var data = await cloudIntegration.SURVEY_REPOSITORY.getSurveys();
         } else {
-            var data = await cloudIntegration.SURVEY_REPOSITORY.getSurvey(surveyId);
+            var data = await cloudIntegration.SURVEY_REPOSITORY.getSurvey(inputObject.surveyID);
         }
         return {
             executionSuccessful: true,

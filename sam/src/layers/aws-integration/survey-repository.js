@@ -74,11 +74,11 @@ async function updateSurvey(surveyId, data) {
     return result;
 }
 
-async function deleteSurvey(event) {
+async function deleteSurvey(surveyId) {
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            id: event['pathParameters']['surveyID']
+            id: surveyId
         })
     }
     var result;
@@ -91,11 +91,11 @@ async function deleteSurvey(event) {
     return result;
 }
 
-async function createSurvey(event) {
+async function createSurvey(data) {
     const id = uuidv4();
-    const surveyParse = JSON.parse(event.body);
+    // const surveyParse = JSON.parse(event.body);
     const optionsArray = [];
-    for (const option of surveyParse.options) {
+    for (const option of data.options) {
         const optionsId = uuidv4();
         optionsArray.push(
             { id: optionsId, text: option.text },
@@ -106,9 +106,13 @@ async function createSurvey(event) {
         TableName: process.env.TABLE_NAME,
         Item: marshall({
             id: id,
-            title: surveyParse.title,
-            validTo: surveyParse.validTo,
-            description: surveyParse.description,
+            // title: surveyParse.title,
+            // validTo: surveyParse.validTo,
+            // description: surveyParse.description,
+            // options: optionsArray
+            title: data.title,
+            validTo: data.validTo,
+            description: data.description,
             options: optionsArray
         }),
         ReturnConsumedCapacity: 'TOTAL'

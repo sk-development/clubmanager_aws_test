@@ -25,21 +25,21 @@ class Participation {
 // }
 
 function getIndividualPathParameter(event, pathParameter) {
-    if(event['pathParameters'] == null){
+    if (event['pathParameters'] == null) {
         return null;
     } else {
         return event['pathParameters'][pathParameter];
     }
 }
 
- function checkUuid(id){
+function checkUuid(id) {
     const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i; // in handler function, define globally
-    if(uuidV4Regex.test(id) == true || id == null){
+    if (uuidV4Regex.test(id) == true || id == null) {
         return true;
     } else {
         return false;
     }
- }
+}
 
 function getObjectData(event) {
     return JSON.parse(event.body);
@@ -47,20 +47,24 @@ function getObjectData(event) {
 
 function getSurveyData(event) {
     var data = getObjectData(event);
-    if(data != null){
-        return new Survey(data.id, data.title, data.validTo, data.description, data.options);
+    if (data != null) {
+        if (data.id == null) {
+            return new Survey(null, data.title, data.validTo, data.description, data.options);
+        } else {
+            return new Survey(data.id, data.title, data.validTo, data.description, data.options);
+        }
     } else {
-        return;
+        return null;
     }
     // TODO
     // do validation if necessary
     // if (data.hasOwnProperty('validTo')) { // do not do this
-        // pass survey object to method to check UUID here
+    // pass survey object to method to check UUID here
     // } else {
     // }
 }
 
-function getParticipationData(event){
+function getParticipationData(event) {
     var data = getObjectData(event);
     return new Participation(data.participationId, data.userId, data.surveyId, data.notation, data.editedOptionsIds);
     // TODO if/else when there is no participation already created
