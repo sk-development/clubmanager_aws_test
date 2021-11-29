@@ -10,12 +10,12 @@ class Survey {
 }
 // participation class
 class Participation {
-    constructor(participationId, userId, surveyId, notation, editedOptionsIds) {
+    constructor(participationId, userId, surveyId, notation, editedOptionsObjectArray) {
         this.participationId = participationId;
         this.userId = userId;
         this.surveyId = surveyId;
         this.notation = notation;
-        this.editedOptionsIds = editedOptionsIds;
+        this.editedOptionsObjectArray = editedOptionsObjectArray;
     }
 }
 
@@ -66,8 +66,15 @@ function getSurveyData(event) {
 
 function getParticipationData(event) {
     var data = getObjectData(event);
-    return new Participation(data.participationId, data.userId, data.surveyId, data.notation, data.editedOptionsIds);
-    // TODO if/else when there is no participation already created
+    if(data != null) {
+        if(data.participationId == null) {
+            return new Participation(null, data.userId, data.surveyId, data.notation, data.editedOptionsObjectArray);
+        } else {
+            return new Participation(data.participationId, data.userId, data.surveyId, data.notation, data.editedOptionsObjectArray);
+        }
+    } else {
+        return null;
+    }
 }
 
 module.exports = {

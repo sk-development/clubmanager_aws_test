@@ -113,9 +113,9 @@ async function getParticipationFromIndex(participationId) {
     return retData;
 }
 
-async function createParticipation(event) {
+async function createParticipation(data) {
     const id = uuidv4();
-    const data = JSON.parse(event.body);
+    // const data = JSON.parse(event.body);
     // await checkUserId(event, data.userId)
     //     .then(result => {
     // if (result.valid == true) {
@@ -145,12 +145,13 @@ async function createParticipation(event) {
         // .catch(err);
 }
 
-async function updateParticipation(event) {
-    const data = JSON.parse(event.body)
+async function updateParticipation(id, data) {
+    // const data = JSON.parse(event.body)
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            participationId: event['pathParameters']['participationID']
+            // participationId: event['pathParameters']['participationID']
+            participationId: id
         }),
         UpdateExpression: "set notation = :n, editedOptionsIds = :eO",
         ExpressionAttributeValues: marshall({

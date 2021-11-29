@@ -35,32 +35,36 @@ exports.handler = async (event) => {
 }
 
 class InputObject {
-    constructor(businessObject, userID, surveyID, participationID) {
-        this.businessObject = businessObject;
-        this.userID = userID;
+    constructor(surveyID) {
         this.surveyID = surveyID;
-        this.participationID = participationID;
     }
 }
 
 function prepareInput(event) {
     var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID');
-    if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter)) {
-        return new InputObject(null, null, surveyIDPathParameter, null);
-    } else {
-        return {
-            executionSuccessful: false,
-            errorMessage: 'SurveyID invalid'
-        }
-    }
+    // if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter)) {
+        return new InputObject(surveyIDPathParameter);
+    // } else {
+    //     return {
+    //         executionSuccessful: false,
+    //         errorMessage: 'SurveyID invalid'
+    //     }
+    // }
 }
 
 async function businessLogic(inputObject) {
     if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
-        var data = await cloudIntegration.SURVEY_REPOSITORY.deleteSurvey(inputObject.surveyID);
-        return {
-            executionSuccessful: true,
-            data
+        if (cloudIntegration.EVENT_HELPER.checkUuid(inputObject.surveyID)) {
+            var data = await cloudIntegration.SURVEY_REPOSITORY.deleteSurvey(inputObject.surveyID);
+            return {
+                executionSuccessful: true,
+                data
+            }
+        } else {
+            return {
+                executionSuccessful: false,
+                errorMessage: 'SurveyID invalid'
+            }
         }
     } else {
         return {
