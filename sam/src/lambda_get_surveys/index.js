@@ -6,11 +6,9 @@ exports.handler = async (event) => {
 };
 
 class InputObject {
-    constructor(businessObject, userID, surveyID, participationID) {
+    constructor(businessObject, surveyID) {
         this.businessObject = businessObject;
-        this.userID = userID;
         this.surveyID = surveyID;
-        this.participationID = participationID;
     }
 }
 
@@ -33,18 +31,18 @@ function prepareInput(event) {
     // new version
     var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID');
     var surveyData = cloudIntegration.EVENT_HELPER.getSurveyData(event);
-    if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter)) {
-        if (surveyData == null) {
-            return new InputObject(null, null, surveyIDPathParameter, null);
-        } else {
-            return new InputObject(surveyData, null, surveyIDPathParameter, null);
-        }
+    // if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter)) { // check Uuid in businessLogic function 
+    if (surveyData == null) {
+        return new InputObject(null, surveyIDPathParameter);
     } else {
-        return {
-            executionSuccessful: false,
-            errorMessage: 'SurveyID invalid'
-        }
+        return new InputObject(surveyData, surveyIDPathParameter);
     }
+    // } else {
+    //     return {
+    //         executionSuccessful: false,
+    //         errorMessage: 'SurveyID invalid'
+    //     }
+    // }
 }
 
 // old version
@@ -82,7 +80,14 @@ async function businessLogic(inputObject) {
         if (inputObject.surveyID == null) {
             var data = await cloudIntegration.SURVEY_REPOSITORY.getSurveys();
         } else {
-            var data = await cloudIntegration.SURVEY_REPOSITORY.getSurvey(inputObject.surveyID);
+            if (cloudIntegration.EVENT_HELPER.checkUuid(inputObject.surveyID)) {
+                var data = await cloudIntegration.SURVEY_REPOSITORY.getSurvey(inputObject.surveyID);
+            } else {
+                return {
+                    executionSuccessful: false,
+                    errorMessage: 'SurveyID invalid'
+                }
+            }
         }
         return {
             executionSuccessful: true,

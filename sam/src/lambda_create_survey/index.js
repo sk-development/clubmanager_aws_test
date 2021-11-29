@@ -26,17 +26,14 @@ exports.handler = async (event) => {
 }
 
 class InputObject {
-    constructor(businessObject, userID, surveyID, participationID) {
+    constructor(businessObject) {
         this.businessObject = businessObject;
-        this.userID = userID;
-        this.surveyID = surveyID;
-        this.participationID = participationID;
     }
 }
 
 function prepareInput(event) {
     var surveyData = cloudIntegration.EVENT_HELPER.getSurveyData(event);
-    return new InputObject(surveyData, null, null, null);
+    return new InputObject(surveyData);
 }
 
 async function businessLogic(inputObject) {
