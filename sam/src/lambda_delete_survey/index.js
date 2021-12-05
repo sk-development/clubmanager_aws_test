@@ -69,6 +69,7 @@ async function businessLogic(inputObject) {
     } else {
         return {
             executionSuccessful: false,
+            requestedActionPermitted: true,
             errorMessage: 'No privileges for requested action!'
         }
     }

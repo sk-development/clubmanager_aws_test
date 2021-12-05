@@ -135,6 +135,7 @@ async function businessLogic(inputObject) { //insert prepareInput object instead
                 } else {
                     return {
                         executionSuccessful: false,
+                        requestedActionPermitted: true,
                         errorMessage: 'No priviliges for requested action!'
                     }
                 }
@@ -158,6 +159,7 @@ async function businessLogic(inputObject) { //insert prepareInput object instead
                     } else {
                         return {
                             executionSuccessful: false,
+                            requestedActionPermitted: true,
                             errorMessage: 'No priviliges for requested action!'
                         }
                     }
@@ -171,6 +173,7 @@ async function businessLogic(inputObject) { //insert prepareInput object instead
     } else {
         return {
             executionSuccessful: false,
+            requestedActionPermitted: true,
             errorMessage: 'No priviliges for requested action!'
         }
     }

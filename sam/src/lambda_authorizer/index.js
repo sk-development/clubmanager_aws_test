@@ -13,7 +13,7 @@ exports.handler = async (event) => {
                     const modulePrivileges = getRequestedModulePrivileges(event.headers['module-type'], result.privileges.tenantModulePrivileges);
                     console.log(modulePrivileges);
                     if (modulePrivileges != null) {
-                        console.log("is normale user!");
+                        console.log("is normal user!");
                         return allowPolicy(false, modulePrivileges);
                     }
                     console.log("Deny!");

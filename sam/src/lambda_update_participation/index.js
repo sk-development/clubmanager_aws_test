@@ -65,6 +65,7 @@ async function businessLogic(inputObject) {
     } else {
         return {
             executionSuccessful: false,
+            requestedActionPermitted: true,
             errorMessage: 'No priviliges for requested action!'
         }
     }
