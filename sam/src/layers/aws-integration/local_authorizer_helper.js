@@ -21,7 +21,7 @@ function localAuthorizer(event) {
                     const modulePrivileges = getRequestedModulePrivileges(event.headers['Module-Type'], result.privileges.tenantModulePrivileges);
                     console.log(modulePrivileges);
                     if (modulePrivileges != null) {
-                        console.log("is normale user!");
+                        console.log("is normal user!");
                         return allowPolicy(false, modulePrivileges);
                     }
                     console.log("Deny!");
@@ -103,6 +103,44 @@ function doPostRequest(event) {
     })
 }
 
+function getCustomAuthorizedEvent(event, localAuthorizerResult) {
+    return {
+        body: event.body,
+        headers: event.headers,
+        httpMethod: event.httpMethod,
+        isBase64Encoded: event.isBase64Encoded,
+        multiValueHeaders: event.multiValueHeaders,
+        multiValueQueryStringParameters: event.multiValueQueryStringParameters,
+        path: event.path,
+        pathParameters: event.pathParameters,
+        queryStringParameters: event.queryStringParameters,
+        requestContext: {
+            accountId: event.requestContext.accountId,
+            apiId: event.requestContext.apiId,
+            domainName: event.requestContext.domainName,
+            extendedRequestId: event.requestContext.extendedRequestId,
+            httpMethod: event.requestContext.httpMethod,
+            identity: event.requestContext.identity,
+            path: event.requestContext.path,
+            protocol: event.requestContext.protocol,
+            requestId: event.requestContext.requestId,
+            requestTime: event.requestContext.requestTime,
+            requestTimeEpoch: event.requestContext.requestTimeEpoch,
+            resourceId: event.requestContext.resourceId,
+            resourcePath: event.requestContext.resourcePath,
+            stage: event.requestContext.stage,
+            authorizer: {
+                isGlobalAdmin: localAuthorizerResult.context.isGlobalAdmin,
+                modulePrivileges: localAuthorizerResult.context.modulePrivileges
+            }
+        },
+        resource: event.resource,
+        stageVariables: event.stageVariables,
+        version: event.version
+    }
+}
+
 module.exports = {
     localAuthorizer: localAuthorizer,
+    getCustomAuthorizedEvent: getCustomAuthorizedEvent
 };
