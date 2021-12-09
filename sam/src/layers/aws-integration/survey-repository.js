@@ -20,6 +20,7 @@ async function getSurveys() {
     return retData;
 }
 
+// sections part added
 async function getSurvey(surveyId) {
     const retData = [];
     var params = {
@@ -38,30 +39,81 @@ async function getSurvey(surveyId) {
         })
     }
 
+    const sectionsArray = [];
+    for (const section of data.Item.sections.L) {
+        const sectionsOptionArray = [];
+        for (const option of section.M.options.L) {
+            sectionsOptionArray.push({
+                optionsID: option.M.id.S,
+                optionsText: option.M.text.S
+            })
+        }
+        sectionsArray.push({
+            sectionsID: section.M.id.S,
+            sectionsText: section.M.text.S,
+            sectionsMultiSelect: section.M.multiSelect.BOOL,
+            sectionsOptions: sectionsOptionArray
+        })
+    }
+
     retData.push({
         id: data.Item.id.S,
         title: data.Item.title.S,
         description: data.Item.description.S,
         validTo: data.Item.validTo.S,
-        textOptions: textOptionsArray
+        textOptions: textOptionsArray,
+        sections: sectionsArray
     })
     return retData;
 }
 
+// sections part added
 async function updateSurvey(surveyId, data) {
     // const data = JSON.parse(event.body)
+    const updatedSection = [];   
+    const sectionsData = data.sections;
+    for (const section of sectionsData) {
+        const updatedSectionOptionsArray = [];
+        for (const option of section.options) {
+            if (option.id == null) {
+                const optionsId = uuidv4();
+                updatedSectionOptionsArray.push(
+                    { text: option.text, id: optionsId },
+                )
+            } else {
+                updatedSectionOptionsArray.push(option);
+            }
+        }
+        if (section.id == null) {
+            const sectionId = uuidv4();
+            updatedSection.push({
+                id: sectionId,
+                multiSelect: section.multiSelect,
+                text: section.text,
+                options: updatedSectionOptionsArray
+            })
+        } else {
+            updatedSection.push({
+                id: section.id,
+                multiSelect: section.multiSelect,
+                text: section.text,
+                options: updatedSectionOptionsArray
+            })
+        }
+    }
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
             // id: event['pathParameters']['surveyID']
             id: surveyId
         }),
-        UpdateExpression: "set title = :t, validTo=:v, description=:d, options=:o",
+        UpdateExpression: "set title = :t, validTo=:v, description=:d, options=:o, sections=:sc",
         ExpressionAttributeValues: marshall({
             ":t": data.title,
             ":v": data.validTo,
             ":d": data.description,
-            ":o": data.options
+            ":o": data.options,
+            ":sc": updatedSection
         }),
     }
     var result;
@@ -91,6 +143,7 @@ async function deleteSurvey(surveyId) {
     return result;
 }
 
+// sections part added
 async function createSurvey(data) {
     const id = uuidv4();
     // const surveyParse = JSON.parse(event.body);
@@ -101,6 +154,40 @@ async function createSurvey(data) {
             { id: optionsId, text: option.text },
         )
     }
+    const updatedSection = [];
+    if (data.sections != null) {
+        const sectionsData = data.sections;
+        for (const section of sectionsData) {
+            const updatedSectionOptionsArray = [];
+            for (const option of section.options) {
+                if (option.id == null) {
+                    const optionsId = uuidv4();
+                    updatedSectionOptionsArray.push(
+                        { text: option.text, id: optionsId },
+                    )
+                } else {
+                    updatedSectionOptionsArray.push(option);
+                }
+            }
+            if (section.id == null) {
+                const sectionId = uuidv4();
+                updatedSection.push({
+                    id: sectionId,
+                    multiSelect: section.multiSelect,
+                    text: section.text,
+                    options: updatedSectionOptionsArray
+                })
+            } else {
+                updatedSection.push({
+                    id: section.id,
+                    multiSelect: section.multiSelect,
+                    text: section.text,
+                    options: updatedSectionOptionsArray
+                })
+            }
+        }
+    }
+
 
     var params = {
         TableName: process.env.TABLE_NAME,
@@ -113,7 +200,8 @@ async function createSurvey(data) {
             title: data.title,
             validTo: data.validTo,
             description: data.description,
-            options: optionsArray
+            options: optionsArray,
+            sections: updatedSection
         }),
         ReturnConsumedCapacity: 'TOTAL'
         ,

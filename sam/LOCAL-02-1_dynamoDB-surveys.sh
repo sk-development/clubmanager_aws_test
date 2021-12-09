@@ -16,7 +16,16 @@ aws dynamodb put-item \
         "title": {"S": "Test survey"} ,
         "description": {"S": "Test description"},
         "validTo": {"S": "30.02.2022"},
-        "options": { "L": [ { "M" : { "id" : { "S" : "3b00b98c-0216-4947-a9c6-8a50ce842c0b" }, "text" : { "S" : "option1" } } }, { "M" : { "id" : { "S" : "9f1f8946-e9d7-4416-9f6a-dd4146de8fb2" }, "text" : { "S" : "option2" } } } ] }
+        "options": { "L": [ { "M" : { "id" : { "S" : "3b00b98c-0216-4947-a9c6-8a50ce842c0b" }, "text" : { "S" : "option1" } } }, { "M" : { "id" : { "S" : "9f1f8946-e9d7-4416-9f6a-dd4146de8fb2" }, "text" : { "S" : "option2" } } } ] },
+        "sections": { "L": [ { "M" : {
+          "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a1234" }, 
+          "text" : { "S" : "section1" }, 
+          "multiSelect" : { "BOOL" : false },
+          "options": { "L": [ { "M" : {
+            "id": { "S": "11476895-c699-4ff0-8457-28cd239a4567"},
+            "text": { "S": "option1" }
+          }}]}
+          }}]}
       }' \
     --return-consumed-capacity TOTAL
 
@@ -28,7 +37,32 @@ aws dynamodb put-item \
         "title": {"S": "Another survey"} ,
         "description": {"S": "Another description"},
         "validTo": {"S": "30.02.2022"},
-        "options": { "L": [ { "M" : { "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a8090" }, "text" : { "S" : "option1" } } }, { "M" : { "id" : { "S" : "d8f7153c-5a23-4a59-8b10-6ecbaf86655d" }, "text" : { "S" : "option2" } } }, { "M" : { "id" : { "S" : "122d4dd9-7582-408b-91f1-8d5d6a4c0d72" }, "text" : { "S" : "option3" } } } ] }
+
+        "options": { "L": [ { "M" : {
+          "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a8090" },
+          "text" : { "S" : "option1" }
+          } },
+          { "M" : { "id" : { "S" : "d8f7153c-5a23-4a59-8b10-6ecbaf86655d" }, "text" : { "S" : "option2" } } }, { "M" : { "id" : { "S" : "122d4dd9-7582-408b-91f1-8d5d6a4c0d72" }, "text" : { "S" : "option3" } } } ] },
+
+        "sections": { "L": [ { "M" : {
+          "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a1234" }, 
+          "text" : { "S" : "section1" }, 
+          "multiSelect" : { "BOOL" : false },
+          "options": { "L": [ { "M" : {
+            "id": { "S": "11476895-c699-4ff0-8457-28cd239a4567"},
+            "text": { "S": "option1" }
+          }}]}
+          }},
+          { "M" : {
+          "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a7584" }, 
+          "text" : { "S" : "section2" }, 
+          "multiSelect" : { "BOOL" : false },
+          "options": { "L": [ { "M" : {
+            "id": { "S": "11476895-c699-4ff0-8457-28cd239a4879"},
+            "text": { "S": "option2" }
+          }}]}
+          }}
+          ]}
       }' \
     --return-consumed-capacity TOTAL
 

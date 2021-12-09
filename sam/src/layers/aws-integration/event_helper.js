@@ -1,11 +1,12 @@
 // survey class
 class Survey {
-    constructor(id, title, validTo, description, options) {
+    constructor(id, title, validTo, description, options, sections) {
         this.id = id;
         this.title = title;
         this.validTo = validTo;
         this.description = description;
         this.options = options;
+        this.sections = sections;
     }
 }
 // participation class
@@ -49,9 +50,9 @@ function getSurveyData(event) {
     var data = getObjectData(event);
     if (data != null) {
         if (data.id == null) {
-            return new Survey(null, data.title, data.validTo, data.description, data.options);
+            return new Survey(null, data.title, data.validTo, data.description, data.options, data.sections);
         } else {
-            return new Survey(data.id, data.title, data.validTo, data.description, data.options);
+            return new Survey(data.id, data.title, data.validTo, data.description, data.options, data.sections);
         }
     } else {
         return null;
