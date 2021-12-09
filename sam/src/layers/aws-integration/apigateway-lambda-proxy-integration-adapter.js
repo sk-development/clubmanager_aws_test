@@ -67,8 +67,8 @@ function handleResult(result) {
     else {
         // 400 for Bad Request, e.g., wrong syntax of input variables
         statusCode = 400;
-        // 403 ift the user is not authorized for the requested action
-        if(result.requestedActionPermitted) {
+        // 403 if the user is not authorized for the requested action
+        if(result.requestedActionForbidden) {
             statusCode = 403;
         }
         return {
