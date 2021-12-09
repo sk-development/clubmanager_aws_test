@@ -11,12 +11,13 @@ class Survey {
 }
 // participation class
 class Participation {
-    constructor(participationId, userId, surveyId, notation, editedOptionsObjectArray) {
+    constructor(participationId, userId, surveyId, notation, editedOptionsObjectArray, editedSectionOptionsArray) {
         this.participationId = participationId;
         this.userId = userId;
         this.surveyId = surveyId;
         this.notation = notation;
         this.editedOptionsObjectArray = editedOptionsObjectArray;
+        this.editedSectionOptionsArray = editedSectionOptionsArray;
     }
 }
 
@@ -69,9 +70,9 @@ function getParticipationData(event) {
     var data = getObjectData(event);
     if(data != null) {
         if(data.participationId == null) {
-            return new Participation(null, data.userId, data.surveyId, data.notation, data.editedOptionsObjectArray);
+            return new Participation(null, data.userId, data.surveyId, data.notation, data.editedOptionsObjectArray, data.editedSectionOptionsArray);
         } else {
-            return new Participation(data.participationId, data.userId, data.surveyId, data.notation, data.editedOptionsObjectArray);
+            return new Participation(data.participationId, data.userId, data.surveyId, data.notation, data.editedOptionsObjectArray, data.editedSectionOptionsArray);
         }
     } else {
         return null;
