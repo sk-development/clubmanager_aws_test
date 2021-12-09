@@ -70,6 +70,17 @@ async function getSurvey(surveyId) {
 // sections part added
 async function updateSurvey(surveyId, data) {
     // const data = JSON.parse(event.body)
+    const updatedOptionsArray = [];
+    for (const option of data.options) {
+        if(option.id == null) {
+            const optionsId = uuidv4();
+            updatedOptionsArray.push(
+                { id: optionsId, text: option.text },
+            )
+        } else {
+            updatedOptionsArray.push(option)
+        }
+    }
     const updatedSection = [];   
     const sectionsData = data.sections;
     for (const section of sectionsData) {
@@ -112,7 +123,7 @@ async function updateSurvey(surveyId, data) {
             ":t": data.title,
             ":v": data.validTo,
             ":d": data.description,
-            ":o": data.options,
+            ":o": updatedOptionsArray,
             ":sc": updatedSection
         }),
     }
