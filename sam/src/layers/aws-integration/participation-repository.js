@@ -40,7 +40,6 @@ async function getUserParticipations(userId) {
     return retData;
 }
 
-// sections part added
 async function getSurveyParticipations(surveyId) {
     const retData = [];
     var params = {
@@ -58,23 +57,17 @@ async function getSurveyParticipations(surveyId) {
         for (const option of item.editedOptionsIds.L) {
             editedOptionsIdsArray.push(option.M.id.S)
         }
-        const editedSectionOptionsArray = [];
-        for(const option of item.editedSectionOptionIds.L) {
-            editedSectionOptionsArray.push(option.M.id.S)
-        }    
         retData.push({
             participationId: item.participationId.S,
             userId: item.userId.S,
             surveyId: item.surveyId.S,
             notation: item.notation.S,
             editedOptionsIds: editedOptionsIdsArray,
-            editedSectionOptionIds: editedSectionOptionsArray
         })
     }
     return retData;
 }
 
-// sections part added
 async function getParticipationById(participationId) {
     var params = {
         TableName: process.env.TABLE_NAME,
@@ -88,12 +81,7 @@ async function getParticipationById(participationId) {
     for (const option of Item.editedOptionsIds.L) {
         editedOptionsIdsArray.push(option.M.id.S)
     }
-    const editedSectionOptionsArray = [];
-    for(const option of Item.editedSectionOptionIds.L) {
-        editedSectionOptionsArray.push(option.M.id.S)
-    }
     retData.editedOptionsIds = editedOptionsIdsArray;
-    retData.editedSectionOptionIds = editedSectionOptionsArray;
     return retData;
 }
 
@@ -125,7 +113,6 @@ async function getParticipationFromIndex(participationId) {
     return retData;
 }
 
-// sections part added
 async function createParticipation(data) {
     const id = uuidv4();
     // const data = JSON.parse(event.body);
@@ -140,7 +127,6 @@ async function createParticipation(data) {
             surveyId: data.surveyId,
             notation: data.notation,
             editedOptionsIds: data.editedOptionsObjectArray,
-            editedSectionOptionIds: data.editedSectionOptionsArray
         }),
         ReturnConsumedCapacity: 'TOTAL',
     };
@@ -159,7 +145,6 @@ async function createParticipation(data) {
         // .catch(err);
 }
 
-// sections part added
 async function updateParticipation(id, data) {
     // const data = JSON.parse(event.body)
     var params = {
@@ -168,11 +153,10 @@ async function updateParticipation(id, data) {
             // participationId: event['pathParameters']['participationID']
             participationId: id
         }),
-        UpdateExpression: "set notation = :n, editedOptionsIds = :eO, editedSectionOptionIds = :eSO",
+        UpdateExpression: "set notation = :n, editedOptionsIds = :eO",
         ExpressionAttributeValues: marshall({
             ":n": data.notation,
-            ":eO": data.editedOptionsObjectArray,
-            ":eSO": data.editedSectionOptionsArray
+            ":eO": data.editedOptionsObjectArray
         }),
     }
     var result;
