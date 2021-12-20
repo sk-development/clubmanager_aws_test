@@ -41,8 +41,9 @@ async function handleAsync(prepareInputCallback, businessLogicCallback, event) {
         }
     }
     else {
+        modulePrivilegesHelper.processModulePrivileges(event)
         try {
-            var result = await businessLogicCallback(event);
+            var result = await businessLogicCallback(preparedInput);
             handledResult = handleResult(result);
         }
         catch (err) {
