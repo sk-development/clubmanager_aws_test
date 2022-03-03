@@ -15,7 +15,7 @@ aws dynamodb put-item \
         "id": {"S": "4af77dd0-c70f-471d-8a26-59b38f885756"},
         "title": {"S": "Test survey"} ,
         "description": {"S": "Test description"},
-        "validTo": {"S": "30.02.2022"},
+        "validTo": {"S": "2022-03-03T15:04:30.868+01:00"},
         "options": { "L": [ { "M" : { "id" : { "S" : "3b00b98c-0216-4947-a9c6-8a50ce842c0b" }, "text" : { "S" : "option1" } } }, { "M" : { "id" : { "S" : "9f1f8946-e9d7-4416-9f6a-dd4146de8fb2" }, "text" : { "S" : "option2" } } } ] },
         "sections": { "L": [ { "M" : {
           "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a1234" }, 
@@ -36,7 +36,7 @@ aws dynamodb put-item \
         "id": {"S": "e4346a00-14ce-4a8a-b2f8-06e55e7a0d08"},
         "title": {"S": "Another survey"} ,
         "description": {"S": "Another description"},
-        "validTo": {"S": "30.02.2022"},
+        "validTo": {"S": "2022-03-03T15:04:30.868+01:00"},
 
         "options": { "L": [ { "M" : {
           "id" : { "S" : "11476895-c699-4ff0-8457-28cd239a8090" },
