@@ -157,7 +157,7 @@ function packageHttpResponse(handledResult) {
     return {
         statusCode: handledResult.statusCode,
         headers: {
-            "Access-Control-Allow-Origin": "http://localhost:4200",
+            "Access-Control-Allow-Origin": "*",
             // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
             // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
         },
