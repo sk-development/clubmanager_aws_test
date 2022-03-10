@@ -1,12 +1,28 @@
-var modulePrivilegesHelper = require('./module_privileges_helper');
-var localAuthorizerHelper = require('./local_authorizer_helper');
+'use strict';
 
-function handle(businessLogicCallback, event) {
+const authorizationService = require('./authorization.service')
+const RestInputAdapter = require('./rest-input-adapter');
+const ValidationRun = require('./validation/validation-run');
+
+async function handleAsync(prepareInputCallback, requiredPrivilegesCallback, validationCallback, businessLogicCallback, event) {
+    let handledResult;
     try {
-        var result = businessLogicCallback(event);
-        handledResult = handleResult(result);
+        const processChain = new ProcessChain();
+
+        if (process.env.AWS_SAM_LOCAL == 'true')
+            processChain.addStep(new ProcessStepLocalAuthorizer());
+        if (prepareInputCallback != null)
+            processChain.addStep(new ProcessStepPrepareInput(prepareInputCallback));
+        if (requiredPrivilegesCallback != null)
+            processChain.addStep(new ProcessStepRequiredPrivileges(requiredPrivilegesCallback));
+        if (validationCallback != null)
+            processChain.addStep(new ProcessStepValidation(validationCallback));
+        processChain.addStep(new ProcessStepBusinessLogic(businessLogicCallback));
+
+        handledResult = await processChain.execute(event);
     }
     catch (err) {
+        console.log(err);
         handledResult = {
             statusCode: 500,
             data: err
@@ -15,67 +31,125 @@ function handle(businessLogicCallback, event) {
     return packageHttpResponse(handledResult);
 }
 
-async function handleAsync(prepareInputCallback, businessLogicCallback, event) {
-    var preparedInput = prepareInputCallback(event);
-    var handledResult;
-    if (process.env.AWS_SAM_LOCAL) {
-        var localAuthorizerResult = await localAuthorizerHelper.localAuthorizer(event);
-        if(localAuthorizerResult.policyDocument.Statement[0].Effect == "Allow") {
-            const customEvent = localAuthorizerHelper.getCustomAuthorizedEvent(event, localAuthorizerResult)
-            modulePrivilegesHelper.processModulePrivileges(customEvent)
-            try {
-                var result = await businessLogicCallback(preparedInput);
-                handledResult = handleResult(result);
-            }
-            catch (err) {
-                handledResult = {
-                    statusCode: 500,
-                    data: err
-                }
-            }
-        } else {
-            handledResult = {
-                statusCode: 403,
-                data: "Local Authorization failed!"
-            }
-        }
+class ProcessChain {
+    constructor() {}
+    _steps = [];
+    _context = new ProcessContext();
+
+    addStep(processStep) {
+        this._steps.push(processStep);
     }
-    else {
-        modulePrivilegesHelper.processModulePrivileges(event)
-        try {
-            var result = await businessLogicCallback(preparedInput);
-            handledResult = handleResult(result);
+
+    async execute(event) {
+        this._context._event = event;
+        let stepResult = null;
+        for (const step of this._steps) {
+            if (stepResult == null)
+                stepResult = await step.execute(this._context);
         }
-        catch (err) {
-            handledResult = {
-                statusCode: 500,
-                data: err
-            }
-        }
+        return stepResult;
     }
-    return packageHttpResponse(handledResult);
 }
 
-function handleResult(result) {
-    var statusCode;
-    if (result.executionSuccessful) {
-        statusCode = 200;
-        return {
-            statusCode,
-            data: result.data
+class ProcessContext {
+    constructor() {}
+    _event = null;
+    _preparedInput = null;
+}
+
+class ProcessStepLocalAuthorizer {
+    constructor() {}
+
+    async execute(context) {
+        const successful = await this.runLocalAuthorizer(context._event);
+        return (successful) ? null : {
+            statusCode: 403,
+            data: "Authorization failed!"
+        };
+    }
+
+    async runLocalAuthorizer(event) {
+        let successful = false;
+        const inputAdapter = new RestInputAdapter();
+        const headerValues = {}
+        if (inputAdapter.extractHeaderValues(event, [inputAdapter.X_APIKEY], headerValues)) {
+            const authorizationResult = await authorizationService.authorize(headerValues[inputAdapter.X_APIKEY]);
+            if (authorizationResult.policyDocument.Statement[0].Effect == "Allow") {
+                if (authorizationResult.context == null)
+                    authorizationResult.context = {}
+                event.requestContext.authorizer = authorizationResult.context;
+                successful = true;
+            }
+        }
+        return Promise.resolve(successful);
+    }
+}
+
+class ProcessStepPrepareInput {
+    constructor(callback) {
+        this.callback = callback;
+    }
+
+    async execute(context) {
+        context._preparedInput = this.callback(context._event);
+    }
+}
+
+class ProcessStepRequiredPrivileges {
+    constructor(callback) {
+        this.callback = callback;
+    }
+
+    async execute(context) {
+        const requiredPrivileges = this.callback(context._preparedInput);
+        if (requiredPrivileges != null) {
+            const authorizerContext = context._event.requestContext.authorizer;
+            const grantedTenantPrivileges = JSON.parse(authorizerContext.tenantPrivileges);
+            const grantedModulePrivileges = JSON.parse(authorizerContext.modulePrivileges);
+            if (!requiredPrivileges.verify(grantedTenantPrivileges, grantedModulePrivileges)) return {
+                    statusCode: 403,
+                    data: "Authorization failed"
+                }
         }
     }
-    else {
-        // 400 for Bad Request, e.g., wrong syntax of input variables
-        statusCode = 400;
-        // 403 if the user is not authorized for the requested action
-        if(result.requestedActionForbidden) {
-            statusCode = 403;
-        }
-        return {
-            statusCode,
-            data: result.errorMessage
-        }
+}
+
+class ProcessStepValidation {
+    constructor (callback) {
+        this.callback = callback;
+    }
+
+    async execute(context) {
+        const validationRun = new ValidationRun();
+        this.callback(context._preparedInput, validationRun);
+        if(!await validationRun.execute()) return {
+                statusCode: 400,
+                data: "Invalid input"
+            }
+        // TODO: provide details from validation steps in response    
+    }
+}
+
+class ProcessStepBusinessLogic {
+    constructor(callback) {
+        this.callback = callback;
+    }
+
+    async execute(context) {
+        const result = await this.callback(context._preparedInput);
+        return this.handleResult(result);
+    }
+
+    handleResult(result) {
+        if (result.executionSuccessful)
+            return {
+                statusCode: 200,
+                data: result.data
+            }
+        else
+            return {
+                statusCode: 500
+            }
     }
 }
 
@@ -87,11 +161,10 @@ function packageHttpResponse(handledResult) {
             // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
             // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
         },
-        body: JSON.stringify(handledResult.data)
+        body: (handledResult.data!=null) ? JSON.stringify(handledResult.data) : ""
     }
 }
 
 module.exports = {
-    handle: handle,
     handleAsync: handleAsync
 };
