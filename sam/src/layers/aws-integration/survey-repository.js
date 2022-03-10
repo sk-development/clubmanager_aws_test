@@ -68,7 +68,7 @@ async function getSurvey(surveyId) {
 }
 
 // sections part added
-async function updateSurvey(surveyId, data) {
+async function updateSurvey(data) {
     // const data = JSON.parse(event.body)
     const updatedOptionsArray = [];
     for (const option of data.options) {
@@ -115,8 +115,7 @@ async function updateSurvey(surveyId, data) {
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            // id: event['pathParameters']['surveyID']
-            id: surveyId
+            id: data.id
         }),
         UpdateExpression: "set title = :t, validTo=:v, description=:d, options=:o, sections=:sc",
         ExpressionAttributeValues: marshall({
@@ -229,7 +228,7 @@ async function createSurvey(data) {
 
 module.exports = {
     getSurveys: getSurveys,
-    getSurvey: getSurvey,
+    getById: getSurvey, // Rename necessary for a generic validation module
     updateSurvey: updateSurvey,
     deleteSurvey: deleteSurvey,
     createSurvey: createSurvey

@@ -1,53 +1,26 @@
+'use strict';
+
 var cloudIntegration = require(process.env.AWS ? '/opt/aws-integration/index' : '../layers/aws-integration/index');
 
-// old version
-// exports.handler = async (event) => {
-//     return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(businessLogic, event);
-// };
-
-// async function businessLogic(event) {
-//     if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
-//         var data = await cloudIntegration.PARTICIPATION_REPOSITORY.createParticipation(event)
-//         return {
-//             executionSuccessful: true,
-//             data
-//         }
-//     } else {
-//         return {
-//             executionSuccessful: false,
-//             errorMessage: 'No priviliges for requested action!'
-//         }
-//     }
-// }
-
-// new version
 exports.handler = async (event) => {
-    return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(prepareInput, businessLogic, event);
-}
-
-class InputObject {
-    constructor(businessObject) {
-        this.businessObject = businessObject;
-    }
+    return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(prepareInput, requiredPrivileges, validate, businessLogic, event);
 }
 
 function prepareInput(event) {
-    var participationData = cloudIntegration.EVENT_HELPER.getParticipationData(event);
-    return new InputObject(participationData);
+    return cloudIntegration.INPUT_ADAPTER.convertParticipation(event);
+}
+
+function requiredPrivileges(inputObject) {
+    return cloudIntegration.PRIVILEGES.require().tenantAdmin().or().survey_admin().or().survey_user();
+}
+
+async function validate(inputObject, validate) {
+    validate.requiredProperty(inputObject, 'userId');
+    validate.requiredProperty(inputObject, 'surveyId');
+    validate.entryExistsForProperty(inputObject, 'surveyId', cloudIntegration.SURVEY_REPOSITORY);
+    validate.validCrossProperty(inputObject, 'surveyId', 'editedOptionsObjectArray', 'surveyOptions');
 }
 
 async function businessLogic(inputObject) {
-    if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
-        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.createParticipation(inputObject.businessObject)
-        return {
-            executionSuccessful: true,
-            data
-        }
-    } else {
-        return {
-            executionSuccessful: false,
-            requestedActionForbidden: true,
-            errorMessage: 'No priviliges for requested action!'
-        }
-    }
+    return await cloudIntegration.PARTICIPATION_REPOSITORY.createParticipation(inputObject);
 }

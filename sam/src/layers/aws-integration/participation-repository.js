@@ -85,7 +85,7 @@ async function getParticipationById(participationId) {
     return retData;
 }
 
-async function getParticipationFromIndex(participationId) {
+async function getParticipationFromIndex(surveyId) {
     const retData = [];
     var params = {
         TableName: process.env.TABLE_NAME,
@@ -145,13 +145,13 @@ async function createParticipation(data) {
         // .catch(err);
 }
 
-async function updateParticipation(id, data) {
+async function updateParticipation(data) {
     // const data = JSON.parse(event.body)
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
             // participationId: event['pathParameters']['participationID']
-            participationId: id
+            participationId: data.id
         }),
         UpdateExpression: "set notation = :n, editedOptionsIds = :eO",
         ExpressionAttributeValues: marshall({
@@ -212,7 +212,7 @@ module.exports = {
     getAllParticipations: getAllParticipations,
     getUserParticipations: getUserParticipations,
     getSurveyParticipations: getSurveyParticipations,
-    getParticipationById: getParticipationById,
+    getById: getParticipationById, // Rename necessary for a generic validation module
     getParticipationFromIndex: getParticipationFromIndex,
     createParticipation: createParticipation,
     updateParticipation: updateParticipation

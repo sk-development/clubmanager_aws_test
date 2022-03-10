@@ -1,180 +1,38 @@
-//This lambda-function is for querying multiple participations
+'use strict';
 
 var cloudIntegration = require(process.env.AWS ? '/opt/aws-integration/index' : '../layers/aws-integration/index');
 
 exports.handler = async (event) => {
-    // event mit einer separaten Methode im Adapter auspacken
-    return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(prepareInput, businessLogic, event);
+    return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(prepareInput, requiredPrivileges, validate, businessLogic, event);
 };
 
-class InputObject {
-    constructor(businessObject, userID, surveyID, participationID) {
-        this.businessObject = businessObject;
-        this.userID = userID;
-        this.surveyID = surveyID;
-        this.participationID = participationID;
-    }
-}
-
 function prepareInput(event) {
-    var userIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'userID');
-    var surveyIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'surveyID');
-    var participationIDPathParameter = cloudIntegration.EVENT_HELPER.getIndividualPathParameter(event, 'participationID');
-    var participationData = cloudIntegration.EVENT_HELPER.getParticipationData(event);
-    if (participationData != null) {
-        // if (cloudIntegration.EVENT_HELPER.checkUuid(surveyIDPathParameter) && cloudIntegration.EVENT_HELPER.checkUuid(userIDPathParameter && cloudIntegration.EVENT_HELPER.checkUuid(participationIDPathParameter))) {
-        return new InputObject(participationData, userIDPathParameter, surveyIDPathParameter, participationIDPathParameter);
-        // } else {
-        //     return {
-        //         executionSuccessful: false,
-        //         errorMessage: 'Input ID invalid'
-        //     }
-        // }
-    } else {
-        return new InputObject(null, userIDPathParameter, surveyIDPathParameter, participationIDPathParameter);
-    }
+    return cloudIntegration.INPUT_ADAPTER.convertAllParticipationPathIds(event);
 }
 
+function requiredPrivileges(inputObject) {
+    if (inputObject.participationId != null || inputObject.userId != null)
+        return cloudIntegration.PRIVILEGES.require().tenantAdmin().or().survey_admin().or().survey_user();
+    return cloudIntegration.PRIVILEGES.require().tenantAdmin().or().survey_admin();
+}
 
-// function prepareInput(event){
-// return js object (path parameter, survey/participatin, userId, surveyId als properties udn darauf aufbauend in der businessLogic die Abfrage für die unterschiedlichen Aufrufe machen...) for businessLogic function
-// }
+async function validate(inputObject, validate) {
+    if (inputObject.id != null)
+        return validate.entryExists(inputObject, cloudIntegration.PARTICIPATION_REPOSITORY);
+    return true;
+}
 
-// old version
-// async function businessLogic(event) { //insert prepareInput object instead of event
-//     if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
-//         if (!event['pathParameters']) {
-//             if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
-//                 var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getAllParticipations();
-//             } else {
-//                 return {
-//                     executionSuccessful: false,
-//                     errorMessage: 'No priviliges for requested action!'
-//                 } 
-//             }
-//         } else {
-//             const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i;
-//             if(event['pathParameters']['userID']) {
-//                 var userId = event['pathParameters']['userID'];
-//                 if (true/*uuidV4Regex.test(userId)*/) {
-//                     var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getUserParticipations(userId);
-//                 } else {
-//                     return {
-//                         executionSuccessful: false,
-//                     }
-//                 }
-//             }
-//             if(event['pathParameters']['surveyID']) {
-//                 if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
-//                     var surveyId = event['pathParameters']['surveyID'];
-//                     if (uuidV4Regex.test(surveyId)) {
-//                         var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getSurveyParticipations(surveyId);
-//                     } else {
-//                         return {
-//                             executionSuccessful: false,
-//                             errorMessage: 'SurveyID invalid!'
-//                         }
-//                     }
-//                 } else {
-//                     return {
-//                         executionSuccessful: false,
-//                         errorMessage: 'No priviliges for requested action!'
-//                     }
-//                 }
-//             }
-//             if(event['pathParameters']['participationID']) {
-//                 var participationId = event['pathParameters']['participationID'];
-//                 if (uuidV4Regex.test(participationId)) {
-//                     var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getParticipationById(participationId);
-//                 } else {
-//                     return {
-//                         executionSuccessful: false,
-//                         errorMessage: 'ParticipationID invalid!'
-//                     }
-//                 }
-//             }
-//         }
-//         return {
-//             executionSuccessful: true,
-//             data
-//         }
-//     }
-//     return {
-//         executionSuccessful: false,
-//         errorMessage: 'No priviliges for requested action!'
-//     }
-// }
-
-
-//new version
-async function businessLogic(inputObject) { //insert prepareInput object instead of event
-    if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isUser()) {
-        // if (inputObject.userID == null && inputObject.surveyID == null && inputObject.participationID == null) {
-        //     if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
-        //         var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getAllParticipations();
-        //     } else {
-        //         return {
-        //             executionSuccessful: false,
-        //             errorMessage: 'No priviliges for requested action!'
-        //         }
-        //     }
-        // } else {
-        if (inputObject.userID != null) {
-            var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getUserParticipations(inputObject.userID);
-        } else {
-            if (inputObject.surveyID != null) {
-                if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
-                    if (cloudIntegration.EVENT_HELPER.checkUuid(inputObject.surveyID)) {
-                        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getSurveyParticipations(inputObject.surveyID);
-                    } else {
-                        return {
-                            executionSuccessful: false,
-                            errorMessage: 'SurveyID invalid'
-                        }
-                    }
-                } else {
-                    return {
-                        executionSuccessful: false,
-                        requestedActionForbidden: true,
-                        errorMessage: 'No priviliges for requested action!'
-                    }
-                }
-            } else {
-                if (inputObject.participationID != null) {
-                    if (cloudIntegration.EVENT_HELPER.checkUuid(inputObject.participationID)) {
-                        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getParticipationById(inputObject.participationID);
-                    } else {
-                        return {
-                            executionSuccessful: false,
-                            errorMessage: 'ParticipationID invalid'
-                        }
-                    }
-                } else {
-                    // return {
-                    //     executionSuccessful: false,
-                    //     errorMessage: 'Path not defined' // TODO -> additional status code for Niklas?
-                    // }
-                    if (cloudIntegration.MODULE_PRIVILEGES_HELPER.isAdmin()) {
-                        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getAllParticipations();
-                    } else {
-                        return {
-                            executionSuccessful: false,
-                            requestedActionForbidden: true,
-                            errorMessage: 'No priviliges for requested action!'
-                        }
-                    }
-                }
-            }
-        }
-        return {
-            executionSuccessful: true,
-            data
-        }
-    } else {
-        return {
-            executionSuccessful: false,
-            requestedActionForbidden: true,
-            errorMessage: 'No priviliges for requested action!'
-        }
+async function businessLogic(inputObject) {
+    if (inputObject.userId != null)
+        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getUserParticipations(inputObject.userId);
+    if (inputObject.surveyId != null)
+        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getSurveyParticipations(inputObject.surveyId);
+    if (inputObject.id != null)
+        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getParticipationById(inputObject.id);
+    else
+        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getAllParticipations();
+    return {
+        executionSuccessful: true,
+        data
     }
 }
