@@ -32,6 +32,7 @@ Resources:
   SurveysTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: !Sub ${AWS::StackName}_Surveys
       AttributeDefinitions: 
         - 
           AttributeName: "id"
@@ -44,6 +45,7 @@ Resources:
   ParticipationsTable:
     Type: AWS::DynamoDB::Table
     Properties:
+      TableName: !Sub ${AWS::StackName}_Participations
       AttributeDefinitions: 
         - 
           AttributeName: "participationId"
