@@ -18,7 +18,7 @@ async function validate(inputObject, validate) {
     validate.requiredProperty(inputObject, 'userId');
     validate.requiredProperty(inputObject, 'surveyId');
     validate.entryExistsForProperty(inputObject, 'surveyId', cloudIntegration.SURVEY_REPOSITORY);
-    validate.validCrossProperty(inputObject, 'surveyId', 'editedOptionsObjectArray', 'surveyOptions');
+    validate.validCrossProperty(inputObject, 'surveyId', 'editedOptionsObjectArray', 'options');
 }
 
 async function businessLogic(inputObject) {

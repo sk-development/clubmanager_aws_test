@@ -17,7 +17,7 @@ function requiredPrivileges(inputObject) {
 async function validate(inputObject, validate) {
     validate.entryExists(inputObject, cloudIntegration.SURVEY_REPOSITORY);
     validate.requiredProperty(inputObject, 'title');
-    validate.requiredProperty(inputObject, 'surveyOptions');
+    validate.requiredProperty(inputObject, 'options');
 }
 
 async function businessLogic(inputObject) {
