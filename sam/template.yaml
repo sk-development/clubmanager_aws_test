@@ -10,6 +10,8 @@ Parameters:
     Type: String
   AuthToken:
     Type: String
+  TenantUuid:
+    Type: String
 Outputs:
   SurveysAPIUrl:
     Value: !Sub "https://${SurveysAPI}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
@@ -23,6 +25,9 @@ Globals:
     Environment:
       Variables:
         AWS: true
+        TENANT_UUID: !Ref TenantUuid
+        AUTH_HOST: !Ref AuthHost
+        AUTH_TOKEN: !Ref AuthToken
 Resources:
   SurveysTable:
     Type: AWS::DynamoDB::Table

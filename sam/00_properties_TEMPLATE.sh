@@ -12,11 +12,15 @@ TIME=$(date +%s%3)
 STACKNAME=<Name for the stack> # HINT: Only chars/numbers and "-" allowed
 BUCKET=<>
 
-
 # Lambda properties
 LAMBDA_EXECUTION_ROLE=arn:aws:iam::$ACCOUNT_ID:role/SK_LambdaBasicExecutionRole_test
+TENANT_UUID=<the uuid of the tenant that is referenced>
 AUTH_HOST=<>
 AUTH_TOKEN=<>
+
+export TENANT_UUID=$TENANT_UUID
+export AUTH_HOST=$AUTH_HOST
+export AUTH_TOKEN=$AUTH_TOKEN
 
 # DynamoDB properties
 TABLE_NAME_SURVEYS_GENERATED='PUT THE NAME OF THE GENERATED SURVEYS TABLE HERE'

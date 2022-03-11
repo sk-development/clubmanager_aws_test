@@ -1,6 +1,6 @@
 module.exports = class TenantService {
 
-    _tenantUuid = "d938gi_test2"; // defaults to demo tenant
+    _tenantUuid = "d938gi"; // defaults to demo tenant
 
     constructor() {
         const tenantUuid = process.env.TENANT_UUID;
