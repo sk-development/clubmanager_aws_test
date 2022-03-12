@@ -8,11 +8,10 @@ sam local start-api \
                       AuthHost=$AUTH_HOST \
                       AuthToken=$AUTH_TOKEN \
                       LocalEndpoint=$LOCAL_ENDPOINT \
-   --warm-containers LAZY 
 
     # --warm-containers EAGER
 
-# sam local start-api -d 5858 \
+# sam local start-api -d 5858 --debug-function GetSurveys \
 #     --template-file template.yaml \
 #     --docker-network localstack_default \
 #     --parameter-overrides LocalEndpoint=$LOCAL_ENDPOINT
