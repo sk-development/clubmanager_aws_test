@@ -115,6 +115,8 @@ Resources:
           Variables:
             TABLE_NAME: !Ref SurveysTable
             LOCAL_ENDPOINT: !Ref LocalEndpoint
+            AUTH_HOST: !Ref AuthHost
+            AUTH_TOKEN: !Ref AuthToken
         Role:
           Ref: LambdaExecutionRole
         Events:
@@ -205,6 +207,8 @@ Resources:
           Variables:
             TABLE_NAME: !Ref ParticipationsTable
             LOCAL_ENDPOINT: !Ref LocalEndpoint
+            AUTH_HOST: !Ref AuthHost
+            AUTH_TOKEN: !Ref AuthToken
         Role:
           Ref: LambdaExecutionRole
         Events:
@@ -284,7 +288,5 @@ Resources:
           Ref: LambdaExecutionRole
         Environment:
           Variables:
-            HOST:
-              Ref: AuthHost
-            XACCESSTOKEN:
-              Ref: AuthToken
+            AUTH_HOST: !Ref AuthHost
+            AUTH_TOKEN: !Ref AuthToken
