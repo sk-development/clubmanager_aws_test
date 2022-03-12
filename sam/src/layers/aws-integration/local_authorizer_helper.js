@@ -1,9 +1,6 @@
 const superagent = require('superagent');
 
 /* Insert correct values before executing */
-var host = '<Backen-API-URL>';
-var xaccesstoken = '<XACCESSTOKEN>';
-
 function localAuthorizer(event) {
     return doPostRequest(event)
         .then((result) => {
@@ -81,6 +78,9 @@ function allowPolicy(isGlobalAdmin, modulePrivileges) {
 }
 
 function doPostRequest(event) {
+    var host = process.env.AUTH_HOST;
+    var xaccesstoken = process.env.AUTH_TOKEN;
+    
     return new Promise((resolve, reject) => {
         /* watch out
         in local version 'X-Apikey' vs. in deployed version 'x-apikey'

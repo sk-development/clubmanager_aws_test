@@ -77,9 +77,9 @@ function doPostRequest(event) {
         // const key = event.headers.authorizationToken;
         const key = event.headers['x-apikey'];
         superagent
-            .post(process.env.HOST + 'api/verify-authentication')
+            .post(process.env.AUTH_HOST + 'api/verify-authentication')
             .set('Content-Type', 'application/json')
-            .set('x-accesstoken', process.env.XACCESSTOKEN)
+            .set('x-accesstoken', process.env.AUTH_TOKEN)
             .send({ 'apikey': key })
             .then((res) => {
                 const test = res.body

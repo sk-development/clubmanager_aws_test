@@ -23,6 +23,8 @@ Globals:
     Environment:
       Variables:
         AWS: true
+        AUTH_HOST: !Ref AuthHost
+        AUTH_TOKEN: !Ref AuthToken
 Resources:
   SurveysTable:
     Type: AWS::DynamoDB::Table
@@ -282,9 +284,3 @@ Resources:
         Handler: index.handler
         Role:
           Ref: LambdaExecutionRole
-        Environment:
-          Variables:
-            HOST:
-              Ref: AuthHost
-            XACCESSTOKEN:
-              Ref: AuthToken
