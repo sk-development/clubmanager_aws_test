@@ -9,5 +9,6 @@ sam deploy \
   --parameter-overrides LambdaExecutionRole=$LAMBDA_EXECUTION_ROLE \
                         AuthHost=$AUTH_HOST \
                         AuthToken=$AUTH_TOKEN \
+                        TenantUuid=$TENANT_UUID \
   --s3-bucket $BUCKET \
   --region eu-central-1

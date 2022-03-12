@@ -16,7 +16,7 @@ function requiredPrivileges(inputObject) {
 
 async function validate(inputObject, validate) {
     validate.requiredProperty(inputObject, 'title');
-    validate.requiredProperty(inputObject, 'surveyOptions');
+    validate.requiredProperty(inputObject, 'options');
     validate.validDate(inputObject, 'validTo');
 }
 
