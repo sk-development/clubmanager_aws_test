@@ -21,5 +21,8 @@ async function validate(inputObject, validate) {
 }
 
 async function businessLogic(inputObject) {
-    return await cloudIntegration.PARTICIPATION_REPOSITORY.updateParticipation(inputObject);
+    await cloudIntegration.PARTICIPATION_REPOSITORY.updateParticipation(inputObject);
+    return {
+        executionSuccessful: true
+    }
 }

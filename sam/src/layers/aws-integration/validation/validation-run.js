@@ -139,7 +139,7 @@ class ValidCrossPropertyValidation {
 
 function checkUuid(id) {
     // ggf. the ignore case i at the end of the regex has to be added again
-    const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/;
+    const uuidV4Regex = /^[A-Fa-f\d]{8}-[A-Fa-f\d]{4}-4[A-Fa-f\d]{3}-[89ABab][A-Fa-f\d]{3}-[A-Fa-f\d]{12}$/;
     if (uuidV4Regex.test(id) == true || id == null) {
         return true;
     } else {
@@ -148,6 +148,6 @@ function checkUuid(id) {
 }
 
 function checkDateForUTC(propertyValue) {
-    const utcDateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$/;
+    const utcDateRegex = /^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}\+[0-9]{2}:[0-9]{2}$/;
     return utcDateRegex.test(propertyValue);
 }

@@ -18,8 +18,7 @@ function requiredPrivileges(inputObject) {
 
 async function validate(inputObject, validate) {
     if (inputObject.id != null)
-        return validate.entryExists(inputObject, cloudIntegration.PARTICIPATION_REPOSITORY);
-    return true;
+        validate.entryExists(inputObject, cloudIntegration.PARTICIPATION_REPOSITORY);
 }
 
 async function businessLogic(inputObject) {

@@ -129,11 +129,10 @@ async function updateSurvey(data) {
     var result;
     try {
         const item = await dynamoDb.updateItem(params).promise();
-        result = 'Success';
     } catch (err) {
         result = err;
     }
-    return result;
+    return item;
 }
 
 async function deleteSurvey(surveyId) {
@@ -146,11 +145,10 @@ async function deleteSurvey(surveyId) {
     var result;
     try {
         const item = await dynamoDb.deleteItem(params).promise();
-        result = 'Success';
     } catch (err) {
         result = err;
     }
-    return result;
+    return item;
 }
 
 // sections part added

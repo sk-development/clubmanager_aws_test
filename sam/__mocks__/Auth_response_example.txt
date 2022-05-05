@@ -1,0 +1,65 @@
+HTTP/1.1 200 OK
+Server: nginx
+Date: Thu, 16 Dec 2021 19:55:09 GMT
+Content-Type: application/json; charset=utf-8
+Transfer-Encoding: chunked
+Connection: close
+Vary: Accept-Encoding
+Cache-Control: must-revalidate, no-cache, no-store
+Pragma: no-cache
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: GET,POST,OPTIONS,DELETE,PUT
+Access-Control-Allow-Headers: x-application,x-apikey,x-accesstoken,x-tenantid
+
+{
+  "valid": true,
+  "message": null,
+  "privileges": {
+    "tenantPrivileges": [
+      {
+        "tenantId": 1,
+        "tenantUuid": "d938gi_test2",
+        "privileges": "admin",
+        "id": 1
+      }
+    ],
+    "tenantModulePrivileges": [
+      {
+        "tenantId": 1,
+        "tenantUuid": "d938gi_test2",
+        "module": "members",
+        "privileges": "privileges,create,delete,batchDelete,read,write,readRelations,writeRelations,calculateFees,calculateBirthdays,relation-read:sections,relation-write:sections,relation-read:relations,relation-write:relations,relation-read:certificates,relation-write:certificates,relation-read:debit_authorizations,relation-write:debit_authorizations,relation-read:billing-types,relation-write:billing-types,billing-read,billing-write,section-access:0,section-access:1,section-access:2,section-access:3,section-access:4,section-access:5,section-access:6,section-access:7,section-access:8,data-read:members_members_membernumber,data-write:members_members_membernumber,data-read:members_members_salutation,data-write:members_members_salutation,data-read:members_members_lastname,data-write:members_members_lastname,data-read:members_members_firstname,data-write:members_members_firstname,data-read:members_members_title,data-write:members_members_title,data-read:members_members_gender,data-write:members_members_gender,data-read:members_members_dateofbirth,data-write:members_members_dateofbirth,data-read:members_members_street,data-write:members_members_street,data-read:members_members_zip,data-write:members_members_zip,data-read:members_members_city,data-write:members_members_city,data-read:members_members_email,data-write:members_members_email,data-read:members_members_phoneprivate,data-write:members_members_phoneprivate,data-read:members_members_phonebusiness,data-write:members_members_phonebusiness,data-read:members_members_phonemobile,data-write:members_members_phonemobile,data-read:members_members_comment,data-write:members_members_comment",
+        "id": 1
+      },
+      {
+        "tenantId": 1,
+        "tenantUuid": "d938gi_test2",
+        "module": "booking",
+        "privileges": "read,match,series,multiResources,custom:teammatch,custom:training,custom:tournament,custom:block",
+        "id": 2
+      },
+      {
+        "tenantId": 1,
+        "tenantUuid": "d938gi_test2",
+        "module": "reporting",
+        "privileges": "booking.listingPerMember,booking.guest",
+        "id": 308
+      },
+      {
+        "tenantId": 1,
+        "tenantUuid": "d938gi_test2",
+        "module": "ranking",
+        "privileges": "user,admin",
+        "id": 325
+      },
+      {
+        "tenantId": 1,
+        "tenantUuid": "d938gi_test2",
+        "module": "survey",
+        "privileges": "user,admin",
+        "id": 620
+      }
+    ]
+  }
+}
