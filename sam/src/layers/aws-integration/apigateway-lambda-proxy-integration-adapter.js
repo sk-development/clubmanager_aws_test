@@ -32,7 +32,7 @@ async function handleAsync(prepareInputCallback, requiredPrivilegesCallback, val
 }
 
 class ProcessChain {
-    constructor() {}
+    constructor() { }
     _steps = [];
     _context = new ProcessContext();
 
@@ -52,13 +52,13 @@ class ProcessChain {
 }
 
 class ProcessContext {
-    constructor() {}
+    constructor() { }
     _event = null;
     _preparedInput = null;
 }
 
 class ProcessStepLocalAuthorizer {
-    constructor() {}
+    constructor() { }
 
     async execute(context) {
         const successful = await this.runLocalAuthorizer(context._event);
@@ -107,25 +107,25 @@ class ProcessStepRequiredPrivileges {
             const grantedTenantPrivileges = JSON.parse(authorizerContext.tenantPrivileges);
             const grantedModulePrivileges = JSON.parse(authorizerContext.modulePrivileges);
             if (!requiredPrivileges.verify(grantedTenantPrivileges, grantedModulePrivileges)) return {
-                    statusCode: 403,
-                    data: "Authorization failed"
-                }
+                statusCode: 403,
+                data: "Authorization failed"
+            }
         }
     }
 }
 
 class ProcessStepValidation {
-    constructor (callback) {
+    constructor(callback) {
         this.callback = callback;
     }
 
     async execute(context) {
         const validationRun = new ValidationRun();
         this.callback(context._preparedInput, validationRun);
-        if(!await validationRun.execute()) return {
-                statusCode: 400,
-                data: "Invalid input"
-            }
+        if (!await validationRun.execute()) return {
+            statusCode: 400,
+            data: "Invalid input"
+        }
         // TODO: provide details from validation steps in response    
     }
 }
@@ -161,7 +161,7 @@ function packageHttpResponse(handledResult) {
             // "Access-Control-Allow-Methods": "'OPTIONS,POST,GET'",
             // "Access-Control-Allow-Headers": "'Content-Type, x-apikey, x-tenantid'"
         },
-        body: (handledResult.data!=null) ? JSON.stringify(handledResult.data) : ""
+        body: (handledResult.data != null) ? JSON.stringify(handledResult.data) : ""
     }
 }
 
