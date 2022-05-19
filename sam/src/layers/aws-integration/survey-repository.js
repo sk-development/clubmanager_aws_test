@@ -1,6 +1,6 @@
 var dynamoDbCommon = require('./dynamoDb-common');
 var dynamoDb = dynamoDbCommon.getDynamoDb();
-const { marshall, unmarshall } = require('@aws-sdk/util-dynamodb');
+const { marshall } = require('@aws-sdk/util-dynamodb');
 const { v4: uuidv4 } = require('uuid');
 
 
@@ -20,7 +20,6 @@ async function getSurveys() {
     return retData;
 }
 
-// sections part added
 async function getSurvey(surveyId) {
     const retData = [];
     var params = {
@@ -67,9 +66,7 @@ async function getSurvey(surveyId) {
     return retData;
 }
 
-// sections part added
 async function updateSurvey(surveyId, data) {
-    // const data = JSON.parse(event.body)
     const updatedOptionsArray = [];
     for (const option of data.options) {
         if(option.id == null) {
@@ -115,7 +112,6 @@ async function updateSurvey(surveyId, data) {
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            // id: event['pathParameters']['surveyID']
             id: surveyId
         }),
         UpdateExpression: "set title = :t, validTo=:v, description=:d, options=:o, sections=:sc",
@@ -154,10 +150,8 @@ async function deleteSurvey(surveyId) {
     return result;
 }
 
-// sections part added
 async function createSurvey(data) {
     const id = uuidv4();
-    // const surveyParse = JSON.parse(event.body);
     const optionsArray = [];
     for (const option of data.options) {
         const optionsId = uuidv4();
@@ -204,10 +198,6 @@ async function createSurvey(data) {
         TableName: process.env.TABLE_NAME,
         Item: marshall({
             id: id,
-            // title: surveyParse.title,
-            // validTo: surveyParse.validTo,
-            // description: surveyParse.description,
-            // options: optionsArray
             title: data.title,
             validTo: data.validTo,
             description: data.description,

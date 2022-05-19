@@ -20,11 +20,6 @@ class Participation {
     }
 }
 
-// function getAllPathParameters(event) {
-//     // return event['pathParameters'][pathParameter];
-//     return event['pathParameters'];
-// }
-
 function getIndividualPathParameter(event, pathParameter) {
     if (event['pathParameters'] == null) {
         return null;
@@ -34,7 +29,7 @@ function getIndividualPathParameter(event, pathParameter) {
 }
 
 function checkUuid(id) {
-    const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i; // in handler function, define globally
+    const uuidV4Regex = /^[A-F\d]{8}-[A-F\d]{4}-4[A-F\d]{3}-[89AB][A-F\d]{3}-[A-F\d]{12}$/i;
     if (uuidV4Regex.test(id) == true || id == null) {
         return true;
     } else {
@@ -79,7 +74,6 @@ function getParticipationData(event) {
 }
 
 module.exports = {
-    // getAllPathParameters: getAllPathParameters,
     getIndividualPathParameter: getIndividualPathParameter,
     checkUuid: checkUuid,
     getSurveyData: getSurveyData,

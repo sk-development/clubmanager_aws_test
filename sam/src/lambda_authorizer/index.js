@@ -73,8 +73,6 @@ function allowPolicy(isGlobalAdmin, modulePrivileges) {
 
 function doPostRequest(event) {
     return new Promise((resolve, reject) => {
-        // const key = event.authorizationToken;
-        // const key = event.headers.authorizationToken;
         const key = event.headers['x-apikey'];
         superagent
             .post(process.env.AUTH_HOST + 'api/verify-authentication')

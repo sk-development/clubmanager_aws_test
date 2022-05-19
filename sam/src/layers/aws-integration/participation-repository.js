@@ -115,10 +115,6 @@ async function getParticipationFromIndex(participationId) {
 
 async function createParticipation(data) {
     const id = uuidv4();
-    // const data = JSON.parse(event.body);
-    // await checkUserId(event, data.userId)
-    //     .then(result => {
-    // if (result.valid == true) {
     var params = {
         TableName: process.env.TABLE_NAME,
         Item: marshall({
@@ -137,20 +133,12 @@ async function createParticipation(data) {
     } catch (err) {
         result = err;
     }
-            // } else {
-            //     return result;
-            // }
-        // }
-        // )
-        // .catch(err);
 }
 
 async function updateParticipation(id, data) {
-    // const data = JSON.parse(event.body)
     var params = {
         TableName: process.env.TABLE_NAME,
         Key: marshall({
-            // participationId: event['pathParameters']['participationID']
             participationId: id
         }),
         UpdateExpression: "set notation = :n, editedOptionsIds = :eO",
@@ -168,45 +156,6 @@ async function updateParticipation(id, data) {
     }
     return result;
 }
-
-// async function checkUserId(event, userId) {
-//     return new Promise((resolve, reject) => {
-//         const key = event["headers"]["x-apikey"];
-//         // how to access the x-apikey from the event!?
-//         // const key = event["headers"]["apikey"];
-//         // const key = event.apikey; 
-//         const options = {
-//             host: `${process.env.host}`,
-//             path: '/api/mod-survey-validation',
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'x-apikey': key,
-//                 'x-tenantid': 1
-//             },
-//             body: {
-//                 'userIds': [userId]
-//             }
-//         };
-
-//         //create the request object with the callback with the result
-//         const req = https.request(options, (res) => {
-//             resolve(JSON.stringify(res));
-//         });
-
-//         // handle the possible errors
-//         req.on('error', (e) => {
-//             reject(e.message);
-//         });
-
-//         //do the request
-//         req.write(JSON.stringify(data));
-
-//         //finish the request
-//         req.end();
-//     });
-// }
-
 
 module.exports = {
     getAllParticipations: getAllParticipations,
