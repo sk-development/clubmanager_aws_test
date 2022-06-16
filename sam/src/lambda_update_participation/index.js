@@ -15,7 +15,7 @@ function requiredPrivileges(inputObject) {
 }
 
 async function validate(inputObject, validate) {
-    validate.entryExists(inputObject, cloudIntegration.PARTICIPATION_REPOSITORY);
+    //validate.entryExists(inputObject, cloudIntegration.PARTICIPATION_REPOSITORY); // TODO causes 400 error
     validate.requiredProperty(inputObject, 'userId');
     validate.requiredProperty(inputObject, 'surveyId');
 }
