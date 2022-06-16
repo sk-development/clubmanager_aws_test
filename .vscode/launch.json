@@ -31,9 +31,9 @@
             "address": "localhost",
             "port": 5858,
             "localRoot": "${workspaceRoot}/sam/src/lambda_create_survey",
+            // "localRoot": "${workspaceFolder}",
             "remoteRoot": "/var/task",
-            "protocol": "inspector",
-            "stopOnEntry": false
+            "sourceMaps": true,
         },
         {
             "type": "aws-sam",
