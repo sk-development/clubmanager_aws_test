@@ -27,8 +27,8 @@ async function businessLogic(inputObject) {
     if (inputObject.surveyId != null)
         var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getSurveyParticipations(inputObject.surveyId);
     if (inputObject.id != null)
-        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getParticipationById(inputObject.id);
-    else
+        var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getById(inputObject.id);
+    if (inputObject.userId != null && inputObject.surveyId != null && inputObject.id != null)
         var data = await cloudIntegration.PARTICIPATION_REPOSITORY.getAllParticipations();
     return {
         executionSuccessful: true,
