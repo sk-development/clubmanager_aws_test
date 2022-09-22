@@ -17,3 +17,12 @@ sam local start-api \
 #     --template-file template.yaml \
 #     --docker-network localstack_default \
 #     --parameter-overrides LocalEndpoint=$LOCAL_ENDPOINT
+
+# working script for debugging
+# sam local start-api -d 5858 \
+#     --template-file template.yaml \
+#     --docker-network localstack_default \
+#     --parameter-overrides LocalEndpoint=$LOCAL_ENDPOINT \
+#     --debug \
+#     --warm-containers LAZY \
+#     --debug-function GetParticipations
