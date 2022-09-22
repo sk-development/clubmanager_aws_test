@@ -27,10 +27,10 @@
         {
             "type": "node",
             "request": "attach",
-            "name": "Attach to SAM CLI start-api",
+            "name": "Attach to SAM CLI",
             "address": "localhost",
             "port": 5858,
-            "localRoot": "${workspaceRoot}/sam/src/lambda_update_participation",
+            "localRoot": "${workspaceRoot}/sam/src/lambda_get_participations",
             "remoteRoot": "/var/task",
             "sourceMaps": true,
         },
