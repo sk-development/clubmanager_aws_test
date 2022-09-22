@@ -32,7 +32,7 @@ module.exports = class RestInputAdapter {
     convertAllParticipationPathIds(event) {
         return {
             id: this._getIndividualPathParameter(event, "participationID"),
-            // surveyId: this._getIndividualPathParameter(event, "surveyID"), // TODO not needed anymore?
+            surveyId: this._getIndividualPathParameter(event, "surveyID"),
             userId: this._getIndividualPathParameter(event, "userID")
         }
     }
@@ -59,7 +59,6 @@ module.exports = class RestInputAdapter {
 
     _getIndividualPathParameter(event, pathParameter) {
         const pathParameters = event['pathParameters'];
-        console.log(event['pathParameters'])
         if (pathParameters == null) {
             return null;
         } else {
