@@ -108,12 +108,12 @@ Resources:
         Description: Common dependencies
         ContentUri: src/layers/
         CompatibleRuntimes:
-          - nodejs12.x
+          - nodejs16.x
         RetentionPolicy: Retain            
   GetSurveys:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_get_surveys
         Handler: index.handler
         Layers:
@@ -142,7 +142,7 @@ Resources:
   PutSurvey:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_create_survey
         Handler: index.handler
         Layers:
@@ -163,7 +163,7 @@ Resources:
   DeleteSurveys:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_delete_survey
         Handler: index.handler
         Layers:
@@ -184,7 +184,7 @@ Resources:
   UpdateSurveys:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_update_survey
         Handler: index.handler
         Layers:
@@ -205,7 +205,7 @@ Resources:
   GetParticipations:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_get_participations
         Handler: index.handler
         Layers:
@@ -246,7 +246,7 @@ Resources:
   PutParticipation:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_create_participation
         Handler: index.handler
         Layers:
@@ -267,7 +267,7 @@ Resources:
   UpdateParticipation:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_update_participation
         Handler: index.handler
         Layers:
@@ -288,7 +288,7 @@ Resources:
   LambdaAuthorizer:
       Type: AWS::Serverless::Function
       Properties:
-        Runtime: nodejs12.x
+        Runtime: nodejs16.x
         CodeUri: ./src/lambda_authorizer
         Handler: index.handler
         Role:
