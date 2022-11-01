@@ -5,7 +5,6 @@ const superagent = require('superagent')
 exports.authorize = async (apiKey) => {
     if (apiKey == null) 
         return Promise.resolve(this.denyAllPolicy());
-
     return doPostRequest(apiKey)
         .then((result) => {
             if (result.valid) {
@@ -64,15 +63,15 @@ function allowPolicy(tenantPrivileges, modulePrivileges) {
 function doPostRequest(apiKey) {
     return new Promise((resolve, reject) => {
         superagent
-            .post(process.env.AUTH_HOST + '/api/verify-authentication')
+            .post(process.env.AUTH_HOST + 'api/verify-authentication')
             .set('Content-Type', 'application/json')
             .set('x-accesstoken', process.env.AUTH_TOKEN)
             .send({ 'apikey': apiKey })
             .then((res) => {
                 if (res.status != 200)
-                    reject("invalid status code");
+                reject("invalid status code");
                 else
-                    resolve(res.body);
+                resolve(res.body);
             }, (rej) => {
                 reject(rej);
             })

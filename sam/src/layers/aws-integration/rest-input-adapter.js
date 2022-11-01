@@ -41,16 +41,16 @@ module.exports = class RestInputAdapter {
         const data = this._parseEventData(event);
         if(data==null)
             return null;
-        return new Survey(this.convertSurveyId(event).id, data.title, data.validTo, data.description, data.options, data.sections);
+            return new Survey(this.convertSurveyId(event).id, data.title, data.validTo, data.description, data.options, data.sections);
     }
-
+    
     convertParticipation(event) {
         const data = this._parseEventData(event);
         if(data==null)
             return null;
-        const convertedPathParameter = convertAllParticipationPathIds(event);
+        const convertedPathParameter = this.convertParticipationId(event);
         return new Participation(
-            convertedPathParameter.id, convertedPathParameter.userId, convertedPathParameter.surveyId, data.notation, data.editedOptionsObjectArray);
+            convertedPathParameter.id, data.userId, data.surveyId, data.notation, data.editedOptionsObjectArray);
     }
 
     _parseEventData(event) {
@@ -61,10 +61,8 @@ module.exports = class RestInputAdapter {
         const pathParameters = event['pathParameters'];
         if (pathParameters == null) {
             return null;
-        } else if (pathParameters[pathParameter]) {
-            return pathParameters[pathParameter];
         } else {
-            return null;
+            return pathParameters[pathParameter];
         }
     }
 

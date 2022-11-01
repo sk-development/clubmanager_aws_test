@@ -21,5 +21,8 @@ async function validate(inputObject, validate) {
 }
 
 async function businessLogic(inputObject) {
-    return await cloudIntegration.SURVEY_REPOSITORY.createSurvey(inputObject);
+    await cloudIntegration.SURVEY_REPOSITORY.createSurvey(inputObject);
+    return {
+        executionSuccessful: true
+    }
 }

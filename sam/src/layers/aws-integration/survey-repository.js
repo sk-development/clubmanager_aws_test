@@ -128,8 +128,7 @@ async function updateSurvey(data) {
     }
     var result;
     try {
-        const item = await dynamoDb.updateItem(params).promise();
-        result = 'Success';
+        result = await dynamoDb.updateItem(params).promise();
     } catch (err) {
         result = err;
     }
@@ -145,8 +144,7 @@ async function deleteSurvey(surveyId) {
     }
     var result;
     try {
-        const item = await dynamoDb.deleteItem(params).promise();
-        result = 'Success';
+        result = await dynamoDb.deleteItem(params).promise();
     } catch (err) {
         result = err;
     }

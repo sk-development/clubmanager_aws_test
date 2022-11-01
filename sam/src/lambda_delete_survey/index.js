@@ -1,6 +1,6 @@
 'use strict';
 
-cloudIntegration = require(process.env.AWS ? '/opt/aws-integration/index' : '../layers/aws-integration/index');
+var cloudIntegration = require(process.env.AWS ? '/opt/aws-integration/index' : '../layers/aws-integration/index');
 
 exports.handler = async (event) => {
     return await cloudIntegration.LAMBDA_PROXY_ADAPTER.handleAsync(prepareInput, requiredPrivileges, validate, businessLogic, event);
@@ -19,5 +19,8 @@ async function validate(inputObject, validate) {
 }
 
 async function businessLogic(inputObject) {
-    return await cloudIntegration.SURVEY_REPOSITORY.deleteSurvey(inputObject.id);
+    await cloudIntegration.SURVEY_REPOSITORY.deleteSurvey(inputObject.id);
+    return {
+        executionSuccessful: true
+    }
 }

@@ -17,10 +17,13 @@ function requiredPrivileges(inputObject) {
 async function validate(inputObject, validate) {
     validate.requiredProperty(inputObject, 'userId');
     validate.requiredProperty(inputObject, 'surveyId');
-    validate.entryExistsForProperty(inputObject, 'surveyId', cloudIntegration.SURVEY_REPOSITORY);
-    validate.validCrossProperty(inputObject, 'surveyId', 'editedOptionsObjectArray', 'options');
+    //validate.entryExistsForProperty(inputObject, 'surveyId', cloudIntegration.SURVEY_REPOSITORY); // TODO causes 500 error
+    // validate.validCrossProperty(inputObject, 'surveyId', 'editedOptionsObjectArray', 'options'); // TODO causes 400 error
 }
 
 async function businessLogic(inputObject) {
-    return await cloudIntegration.PARTICIPATION_REPOSITORY.createParticipation(inputObject);
+    await cloudIntegration.PARTICIPATION_REPOSITORY.createParticipation(inputObject);
+    return {
+        executionSuccessful: true
+    }
 }
